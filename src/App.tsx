@@ -5,10 +5,10 @@ import Courses from "./components/courses";
 import CoursesDetails from "./components/courses-details";
 
 import Instructor from "./components/instructor";
-import InstructorDetails from "./components/instructor-details";
+
 import SignIn from "./components/sign-in";
 import Register from "./components/register";
-import NotFound from "./components/Error";
+
 import InstructorDashboardLayout from "./components/dashboard/InstructorDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./components/context/AuthContext";
@@ -26,7 +26,6 @@ const router = createBrowserRouter([
   { path: "/courses", element: <Courses /> },
   { path: "/courses-details/:slug", element: <CoursesDetails /> },
   { path: "/instructor", element: <Instructor /> },
-  { path: "/instructor-details", element: <InstructorDetails /> },
   { path: "/sign-in", element: <SignIn /> },
   { path: "/register", element: <Register /> },
   {
@@ -42,7 +41,7 @@ const router = createBrowserRouter([
       { path: "answer", element: <AddAnswerForm /> },
     ],
   },
-  { path: "*", element: <NotFound /> },
+
 ]);
 
 function App() {
