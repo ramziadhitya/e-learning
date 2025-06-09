@@ -153,7 +153,9 @@ const CoursesDetailsArea = () => {
                                                 controls
                                                 className="w-100 rounded my-3"
                                                 src={`${API_URL}${vid.url}`}
+                                                preload="none"
                                             />
+
                                         ))
                                     ) : (
                                         <p className="text-muted">No video available.</p>
@@ -229,6 +231,7 @@ const CoursesDetailsArea = () => {
                                 src={data.thumbnail?.url ? `${API_URL}${data.thumbnail.url}` : "/assets/img/default-thumbnail.jpg"}
                                 alt={data.title}
                                 className="img-fluid rounded mb-3"
+                                loading="lazy"
                                 style={{ objectFit: "cover", height: "200px", width: "100%" }}
                             />
                             <h5 className="text-muted">{data.category}</h5>
