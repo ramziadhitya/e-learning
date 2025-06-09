@@ -14,7 +14,7 @@ interface Course {
     rating: number;
     instructor?: Instructor;
 }
-
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:1337";
 const BreadcrumbCoursesDetails = () => {
     const { slug } = useParams<{ slug: string }>();
     const [course, setCourse] = useState<Course | null>(null);
@@ -24,7 +24,7 @@ const BreadcrumbCoursesDetails = () => {
         if (!slug) return;
 
         axios
-            .get(`http://localhost:1337/api/courses?filters[slug][$eq]=${slug}&populate=*`)
+            .get(`${API_BASE_URL}/api/courses?filters[slug][$eq]=${slug}&populate=*`)
             .then((res) => {
                 const data = res.data.data?.[0];
                 if (data) {
