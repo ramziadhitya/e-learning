@@ -5,11 +5,14 @@ import { Link } from "react-router-dom";
 const FooterOne = ({ style_2 }: any) => {
     return (
         <>
-            <footer className={`footer-section fix ${style_2 ? "" : "footer-bg"}`}>
+            <footer
+                className={`footer-section fix ${style_2 ? "" : "footer-bg"}`}
+                style={{ minHeight: "300px" }}
+            >
                 <div className="container" >
                     <div className={`footer-widget-wrapper ${style_2 ? "style-4" : ""}`}>
                         <div className="row">
-                            <div className="col-xl-3 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay=".2s">
+                            <div className="col-xl-3 col-lg-4 col-md-6 ">
                                 <div className="single-footer-widget">
                                     <div className="widget-head">
 
