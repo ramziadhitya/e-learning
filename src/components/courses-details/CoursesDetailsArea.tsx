@@ -8,6 +8,8 @@ import qs from "qs";
 const API_URL = import.meta.env.VITE_API_URL;
 
 
+// ... (imports tetap sama)
+
 const CoursesDetailsArea = () => {
     const { slug } = useParams<{ slug: string }>();
     const [course, setCourse] = useState<any>(null);
@@ -58,9 +60,7 @@ const CoursesDetailsArea = () => {
 
         const query = qs.stringify(
             {
-                filters: {
-                    slug: { $eq: slug },
-                },
+                filters: { slug: { $eq: slug } },
                 populate: {
                     video: true,
                     thumbnail: true,
@@ -68,9 +68,7 @@ const CoursesDetailsArea = () => {
                     quizzes: {
                         populate: {
                             questions: {
-                                populate: {
-                                    answers: true,
-                                },
+                                populate: { answers: true },
                             },
                         },
                     },
@@ -115,6 +113,7 @@ const CoursesDetailsArea = () => {
                     {/* Left Content */}
                     <div className="col-lg-8 mb-4">
                         <div className="bg-white rounded p-4 shadow-sm">
+                            {/* Tabs */}
                             <ul className="nav nav-pills mb-4 gap-2" id="tabs">
                                 {["Course", "Curriculum", "Quiz"].map((tab) => (
                                     <li className="nav-item" key={tab}>
@@ -130,7 +129,8 @@ const CoursesDetailsArea = () => {
                                 ))}
                             </ul>
 
-                            <div className="tab-content">
+                            {/* Tab Content */}
+                            <div className="tab-content" style={{ minHeight: "400px" }}>
                                 {/* Course Info */}
                                 <div id="Course" className="tab-pane fade show active">
                                     <h3>Description</h3>
@@ -153,9 +153,8 @@ const CoursesDetailsArea = () => {
                                                 controls
                                                 className="w-100 rounded my-3"
                                                 src={`${API_URL}${vid.url}`}
-                                                preload="none"
+                                                preload="metadata"
                                             />
-
                                         ))
                                     ) : (
                                         <p className="text-muted">No video available.</p>
@@ -165,6 +164,7 @@ const CoursesDetailsArea = () => {
                                 {/* Quiz */}
                                 <div id="Quiz" className="tab-pane fade">
                                     <h3 className="mb-3">Quiz</h3>
+
                                     {!quizStarted ? (
                                         <div className="text-center">
                                             <button className="btn btn-success" onClick={() => setQuizStarted(true)}>
@@ -230,9 +230,11 @@ const CoursesDetailsArea = () => {
                             <img
                                 src={data.thumbnail?.url ? `${API_URL}${data.thumbnail.url}` : "/assets/img/default-thumbnail.jpg"}
                                 alt={data.title}
+                                width="100%"
+                                height="200"
                                 className="img-fluid rounded mb-3"
                                 loading="lazy"
-                                style={{ objectFit: "cover", height: "200px", width: "100%" }}
+                                style={{ objectFit: "cover", width: "100%", height: "200px" }}
                             />
                             <h5 className="text-muted">{data.category}</h5>
                             <h4 className="fw-bold">{data.title}</h4>
@@ -267,5 +269,4 @@ const CoursesDetailsArea = () => {
         </section>
     );
 };
-
 export default CoursesDetailsArea;
