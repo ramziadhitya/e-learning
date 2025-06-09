@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 const CourseDetailsTabs = ({ data }: { data: any }) => {
     const [activeTab, setActiveTab] = useState<"Course" | "Curriculum" | "Quiz">("Course");
     const [quizStarted, setQuizStarted] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
+    const [timeLeft, setTimeLeft] = useState(300);
     const [selectedAnswers, setSelectedAnswers] = useState<{ [questionId: string]: string }>({});
 
     useEffect(() => {
@@ -31,36 +31,25 @@ const CourseDetailsTabs = ({ data }: { data: any }) => {
         <div>
             {/* Tab Navigation */}
             <ul className="nav nav-tabs">
-                <li className="nav-item">
-                    <button
-                        className={`nav-link ${activeTab === "Course" ? "active" : ""}`}
-                        onClick={() => setActiveTab("Course")}
-                    >
-                        Course Info
-                    </button>
-                </li>
-                <li className="nav-item">
-                    <button
-                        className={`nav-link ${activeTab === "Curriculum" ? "active" : ""}`}
-                        onClick={() => setActiveTab("Curriculum")}
-                    >
-                        Curriculum
-                    </button>
-                </li>
-                <li className="nav-item">
-                    <button
-                        className={`nav-link ${activeTab === "Quiz" ? "active" : ""}`}
-                        onClick={() => setActiveTab("Quiz")}
-                    >
-                        Quiz
-                    </button>
-                </li>
+                {["Course", "Curriculum", "Quiz"].map((tab) => (
+                    <li className="nav-item" key={tab}>
+                        <button
+                            className={`nav-link ${activeTab === tab ? "active" : ""}`}
+                            onClick={() => setActiveTab(tab as any)}
+                        >
+                            {tab === "Course" ? "Course Info" : tab}
+                        </button>
+                    </li>
+                ))}
             </ul>
 
             {/* Tab Content */}
-            <div className="tab-content" style={{ minHeight: "500px", transition: "min-height 0.3s ease" }}>
+            <div
+                className="tab-content mt-3"
+                style={{ minHeight: "600px", transition: "min-height 0.3s ease-in-out" }}
+            >
                 {activeTab === "Course" && (
-                    <div className="tab-pane fade show active mt-3">
+                    <div className="tab-pane fade show active">
                         <h3>Description</h3>
                         {Array.isArray(data.description) ? (
                             data.description.map((block: any, i: number) => (
@@ -73,17 +62,22 @@ const CourseDetailsTabs = ({ data }: { data: any }) => {
                 )}
 
                 {activeTab === "Curriculum" && (
-                    <div className="tab-pane fade show active mt-3">
+                    <div className="tab-pane fade show active">
                         <h3>Course Curriculum</h3>
                         {Array.isArray(data.video) && data.video.length > 0 ? (
                             data.video.map((vid: any, idx: number) => (
-                                <video
+                                <div
                                     key={idx}
-                                    controls
-                                    className="w-100 rounded my-3"
-                                    src={`${import.meta.env.VITE_API_URL}${vid.url}`}
-                                    preload="metadata"
-                                />
+                                    className="rounded overflow-hidden my-3"
+                                    style={{ aspectRatio: "16/9", backgroundColor: "#f1f1f1" }}
+                                >
+                                    <video
+                                        controls
+                                        className="w-100 h-100 object-cover"
+                                        src={`${import.meta.env.VITE_API_URL}${vid.url}`}
+                                        preload="metadata"
+                                    />
+                                </div>
                             ))
                         ) : (
                             <p className="text-muted">No video available.</p>
@@ -92,7 +86,7 @@ const CourseDetailsTabs = ({ data }: { data: any }) => {
                 )}
 
                 {activeTab === "Quiz" && (
-                    <div className="tab-pane fade show active mt-3">
+                    <div className="tab-pane fade show active">
                         <h3 className="mb-3">Quiz</h3>
                         {!quizStarted ? (
                             <div className="text-center">
