@@ -12,12 +12,7 @@ const FooterOne = ({ style_2 }: any) => {
                             <div className="col-xl-3 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay=".2s">
                                 <div className="single-footer-widget">
                                     <div className="widget-head">
-                                        <Link to="/">
-                                            {style_2 ? <img src="assets/img/logo/black-logo-2.svg" alt="img" />
-                                                :
-                                                <img src="assets/img/logo/white-logo.svg" alt="img" />
-                                            }
-                                        </Link>
+
                                     </div>
                                     <div className="footer-content">
                                         <p>

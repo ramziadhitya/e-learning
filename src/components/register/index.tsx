@@ -3,18 +3,18 @@ import MarqueeOne from "../../common/MarqueeOne";
 import Preloader from "../../common/Preloader";
 import ScrollTop from "../../common/ScrollTop";
 import FooterOne from "../../layouts/footers/FooterOne";
-import HeaderOne from "../../layouts/headers/HeaderOne";
+import HeaderTwo from "../../layouts/headers/HeaderTwo";
 import RegisterForm from "./RegisterForm";
 
- 
+
 
 const Register = () => {
 	return (
 		<>
-		<Preloader />
-			<HeaderOne /> 
+			<Preloader />
+			<HeaderTwo />
 			<BreadcrumbCourses title="Register" subtitle="Register" />
-			<RegisterForm />       
+			<RegisterForm />
 			<MarqueeOne style_2={true} />
 			<FooterOne />
 			<ScrollTop />

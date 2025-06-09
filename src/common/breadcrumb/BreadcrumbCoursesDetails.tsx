@@ -31,7 +31,7 @@ const BreadcrumbCoursesDetails = () => {
                     setCourse({
                         id: data.id,
                         title: data.title ?? "Untitled Course",
-                        category: data.Category ?? "Uncategorized",
+                        category: data.category ?? "Uncategorized",
                         studentsCount: parseInt(data.studentsCount) || 0,
                         rating: parseFloat(data.rating) || 0,
                         instructor: data.instructor

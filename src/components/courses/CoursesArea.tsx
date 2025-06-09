@@ -11,14 +11,14 @@ interface Course {
     thumbnail?: {
         url: string;
     };
-    Category: string;
+    category: string;
     studentsCount: number;
     rating: number;
     instructor?: {
         username: string;
     };
 }
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:1337";
 const CoursesArea = () => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
@@ -26,7 +26,7 @@ const CoursesArea = () => {
     const selectHandler = (_e: any) => { };
 
     useEffect(() => {
-        axios.get("http://localhost:1337/api/courses?populate=*")
+        axios.get(`${API_BASE_URL}/api/courses?populate=*`)
             .then((res) => {
                 console.log("Strapi courses response:", res.data);
                 const formattedCourses = res.data.data.map((item: any) => {
@@ -35,7 +35,7 @@ const CoursesArea = () => {
                         title,
                         slug,
                         description,
-                        Category,
+                        category,
                         studentsCount,
                         rating,
                         documentId,
@@ -48,7 +48,7 @@ const CoursesArea = () => {
                         title,
                         slug,
                         description,
-                        Category,
+                        category,
                         studentsCount,
                         rating,
                         documentId,
@@ -106,7 +106,7 @@ const CoursesArea = () => {
                                 title,
                                 slug,
                                 thumbnail,
-                                Category,
+                                category,
                                 studentsCount,
                                 rating,
                                 instructor
@@ -118,7 +118,7 @@ const CoursesArea = () => {
                                         <div className="courses-card-items style-2">
                                             <div className="courses-image">
                                                 <img
-                                                    src={thumbnail?.url ? `http://localhost:1337${thumbnail.url}` : "/assets/img/default-thumbnail.jpg"}
+                                                    src={thumbnail?.url ? `${API_BASE_URL}${thumbnail.url}` : "/assets/img/default-thumbnail.jpg"}
                                                     alt={title}
                                                 />
 
@@ -126,7 +126,7 @@ const CoursesArea = () => {
                                             </div>
                                             <div className="courses-content">
                                                 <ul className="post-cat">
-                                                    <li><Link to="/courses">{Category}</Link></li>
+                                                    <li><Link to="/courses">{category}</Link></li>
                                                     <li>
                                                         {[...Array(5)].map((_, i) => {
                                                             if (rating >= i + 1) {

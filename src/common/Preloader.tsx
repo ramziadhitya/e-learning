@@ -73,33 +73,7 @@ export default function Preloader() {
 				<div id="preloader" className="preloader">
 					<div className="animation-preloader">
 						<div className="edu-preloader-icon">
-							<img src="assets/img/preloader.gif" alt="" />
-						</div>
-						<div className="txt-loading">
-							<span data-text-preloader="E" className="letters-loading">
-								E
-							</span>
-							<span data-text-preloader="D" className="letters-loading">
-								D
-							</span>
-							<span data-text-preloader="U" className="letters-loading">
-								U
-							</span>
-							<span data-text-preloader="S" className="letters-loading">
-								S
-							</span>
-							<span data-text-preloader="P" className="letters-loading">
-								P
-							</span>
-							<span data-text-preloader="A" className="letters-loading">
-								A
-							</span>
-							<span data-text-preloader="C" className="letters-loading">
-								C
-							</span>
-							<span data-text-preloader="E" className="letters-loading">
-								E
-							</span>
+
 						</div>
 						<p className="text-center">Loading</p>
 					</div>

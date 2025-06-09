@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const RegisterForm = () => {
     const [formData, setFormData] = useState({
@@ -10,15 +10,15 @@ const RegisterForm = () => {
         lastName: ""
     });
 
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(null);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
         setSuccess(null);
@@ -29,7 +29,7 @@ const RegisterForm = () => {
         }
 
         try {
-            const res = await fetch("http://localhost:1337/api/auth/local/register", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/local/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

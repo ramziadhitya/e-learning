@@ -1,6 +1,13 @@
-import React from "react";
+// Import Tailwind hanya untuk dashboard
+import "../../dashboard.css";
+
 import DashboardHeader from "./DashboardHeader";
 import DashboardSidebar from "./DashboardSidebar";
+import { useState } from "react";
+import AddCourseForm from "./AddCourseForm";
+import AddQuizForm from "../quiz/AddQuizForm";
+import AddQuestionForm from "../quiz/AddQuestionForm";
+import AddAnswerForm from "../quiz/AddAnswerForm";
 
 const stats = [
     { label: "Enrolled Course", value: 4 },
@@ -32,60 +39,85 @@ const recentCourses = [
 ];
 
 export default function InstructorDashboard() {
-    return (
-        <div className="flex min-h-screen bg-gray-100">
-            <DashboardSidebar />
-            <main className="flex-1 p-6">
-                <DashboardHeader />
+    const [activeView, setActiveView] = useState("dashboard");
 
-                {/* Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-                    {stats.map((stat) => (
-                        <div
-                            key={stat.label}
-                            className="bg-white p-4 rounded-lg shadow text-center"
-                        >
-                            <div className="text-2xl font-bold text-blue-600">
-                                {stat.value.toString().padStart(2, "0")}
-                            </div>
-                            <div className="text-sm text-gray-600 mt-1">{stat.label}</div>
+    const renderView = () => {
+        switch (activeView) {
+            case "dashboard":
+                return (
+                    <>
+                        {/* Stats */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+                            {stats.map((stat) => (
+                                <div
+                                    key={stat.label}
+                                    className="bg-white p-4 rounded-lg shadow text-center"
+                                >
+                                    <div className="text-2xl font-bold text-blue-600">
+                                        {stat.value.toString().padStart(2, "0")}
+                                    </div>
+                                    <div className="text-sm text-gray-600 mt-1">{stat.label}</div>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
 
-                {/* Recently Created Courses */}
-                <section className="bg-white rounded-lg shadow p-4 mb-8">
-                    <h2 className="font-semibold text-lg mb-4">Recently Created Courses</h2>
-                    <table className="w-full table-auto text-left">
-                        <thead>
-                            <tr className="text-gray-600 text-sm border-b">
-                                <th className="py-2">Courses</th>
-                                <th className="py-2">Enrolled</th>
-                                <th className="py-2">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {recentCourses.map((course, i) => (
-                                <tr key={i} className="border-b hover:bg-gray-50">
-                                    <td className="py-3 flex items-center gap-3">
+                        {/* Recently Created Courses */}
+                        <section className="bg-white rounded-lg shadow p-4 mb-8">
+                            <h2 className="font-semibold text-lg mb-4">
+                                Recently Created Courses
+                            </h2>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                {recentCourses.map((course, index) => (
+                                    <div
+                                        key={index}
+                                        className="border rounded-lg overflow-hidden bg-gray-50 shadow-sm"
+                                    >
                                         <img
                                             src={course.image}
                                             alt={course.title}
-                                            className="w-10 h-10 rounded object-cover"
+                                            className="w-full h-40 object-cover"
                                         />
-                                        <span>{course.title}</span>
-                                    </td>
-                                    <td className="py-3">{course.enrolled}</td>
-                                    <td className="py-3">
-                                        <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded">
-                                            {course.status}
-                                        </span>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </section>
+                                        <div className="p-4">
+                                            <h3 className="font-semibold text-md mb-2">
+                                                {course.title}
+                                            </h3>
+                                            <p className="text-sm text-gray-600 mb-1">
+                                                Status: {course.status}
+                                            </p>
+                                            <p className="text-sm text-gray-600">
+                                                Enrolled Students: {course.enrolled}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    </>
+                );
+
+            case "addCourse":
+                return <AddCourseForm onBack={() => setActiveView("dashboard")} />;
+
+            case "quizForm":
+                return <AddQuizForm />;
+
+            case "questionForm":
+                return <AddQuestionForm />;
+
+            case "answerForm":
+                return <AddAnswerForm />;
+
+            default:
+                return <p className="text-gray-600">Page not found.</p>;
+        }
+    };
+
+    return (
+        <div className="flex min-h-screen bg-gray-100">
+            <DashboardSidebar onNavigate={setActiveView} />
+            <main className="flex-1 p-6 overflow-y-auto">
+                <DashboardHeader />
+                {renderView()}
             </main>
         </div>
     );

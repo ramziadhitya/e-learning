@@ -16,9 +16,7 @@ const HeaderTwo = () => {
             <header className="header-section-2">
                 <div className="container">
                     <div className="header-top">
-                        <Link to="/" className="top-logo">
-                            <img src="assets/img/logo/black-logo.svg" alt="img" />
-                        </Link>
+
                         <div className="category-oneadjust gap-6 d-flex align-items-center">
                             <div className="icon">
                                 <img src="assets/img/logo/dot.png" alt="img" />
@@ -52,9 +50,6 @@ const HeaderTwo = () => {
                     <div className="container">
                         <div className="mega-menu-wrapper">
                             <div className="header-main">
-                                <Link to="/" className="header-logo">
-                                    <img src="assets/img/logo/black-logo.svg" alt="logo-img" />
-                                </Link>
                                 <div className="header-left">
                                     <div className="mean__menu-wrapper">
                                         <div className="main-menu">

@@ -1,7 +1,11 @@
+// CoursesDetailsArea.tsx
+
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import qs from "qs";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 
 const CoursesDetailsArea = () => {
@@ -11,11 +15,10 @@ const CoursesDetailsArea = () => {
     const [selectedAnswers, setSelectedAnswers] = useState<{ [questionId: number]: number }>({});
     const [quizResult, setQuizResult] = useState<any>(null);
     const [quizStarted, setQuizStarted] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(60); // 15 menit = 900 detik
-
+    const [timeLeft, setTimeLeft] = useState(60);
 
     const handleSubmitQuiz = async () => {
-        const quiz = data.quizzes?.[0];
+        const quiz = course?.quizzes?.[0];
         if (!quiz) return;
 
         const questions = quiz.questions || [];
@@ -32,25 +35,23 @@ const CoursesDetailsArea = () => {
         const passed = score >= 70;
 
         try {
-            await axios.post("http://localhost:1337/api/quiz-submissions", {
+            await axios.post(`${API_URL}/api/quiz-submissions`, {
                 data: {
-                    userName: "Guest",              // Ganti ini kalau pakai auth
-                    score: score,
-                    passed: passed,
+                    userName: "Guest",
+                    score,
+                    passed,
                     quiz: quiz.id,
                     totalQuestions: total,
                     correctAnswers: correct,
-                }
+                },
             });
 
             setQuizResult({ score, correctAnswers: correct, totalQuestions: total, passed });
         } catch (error) {
             console.error("Error submitting quiz:", error);
-            alert("Gagal menyimpan hasil quiz. Pastikan field di Strapi sesuai.");
+            alert("Gagal menyimpan hasil quiz.");
         }
     };
-
-
 
     useEffect(() => {
         if (!slug) return;
@@ -79,7 +80,7 @@ const CoursesDetailsArea = () => {
         );
 
         axios
-            .get(`http://localhost:1337/api/courses?${query}`)
+            .get(`${API_URL}/api/courses?${query}`)
             .then((res) => {
                 const raw = res.data.data?.[0];
                 if (raw) setCourse(raw);
@@ -92,308 +93,170 @@ const CoursesDetailsArea = () => {
         let timer: NodeJS.Timeout;
 
         if (quizStarted && timeLeft > 0) {
-            timer = setTimeout(() => {
-                setTimeLeft((prev) => prev - 1);
-            }, 1000);
+            timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
         }
 
         if (quizStarted && timeLeft === 0) {
-            handleSubmitQuiz(); // auto-submit ketika waktu habis
+            handleSubmitQuiz();
         }
 
         return () => clearTimeout(timer);
     }, [quizStarted, timeLeft]);
 
-
-
-    if (loading) return <p>Loading...</p>;
-    if (!course) return <p>Course not found</p>;
+    if (loading) return <p className="text-center py-5">Loading...</p>;
+    if (!course) return <p className="text-center py-5">Course not found</p>;
 
     const data = course;
 
     return (
-        <section className="courses-details-area pt-100 pb-70">
+        <section className="pt-5 pb-5 bg-light">
             <div className="container">
                 <div className="row">
-                    {/* KIRI: Main Content */}
-                    <div className="col-lg-8">
-                        <div className="courses-details-content">
-                            {/* Tab Menu */}
-                            <ul className="nav nav-pills justify-content-center gap-3 mb-5" role="tablist">
-                                <li className="nav-item" role="presentation">
-                                    <a
-                                        href="#Course"
-                                        data-bs-toggle="tab"
-                                        className="nav-link active"
-                                        role="tab"
-                                        style={{
-                                            padding: "12px 24px",
-                                            borderRadius: "30px",
-                                            backgroundColor: "#e0e0e0",
-                                            fontWeight: 600,
-                                            color: "#333",
-                                            transition: "all 0.3s ease",
-                                        }}
-                                    >
-                                        Course Info
-                                    </a>
-                                </li>
-                                <li className="nav-item" role="presentation">
-                                    <a
-                                        href="#Curriculum"
-                                        data-bs-toggle="tab"
-                                        className="nav-link"
-                                        role="tab"
-                                        style={{
-                                            padding: "12px 24px",
-                                            borderRadius: "30px",
-                                            backgroundColor: "#e0e0e0",
-                                            fontWeight: 600,
-                                            color: "#333",
-                                            transition: "all 0.3s ease",
-                                        }}
-                                    >
-                                        Curriculum
-                                    </a>
-                                </li>
-                                <li className="nav-item" role="presentation">
-                                    <a
-                                        href="#Quiz"
-                                        data-bs-toggle="tab"
-                                        className="nav-link"
-                                        role="tab"
-                                        style={{
-                                            padding: "12px 24px",
-                                            borderRadius: "30px",
-                                            backgroundColor: "#e0e0e0",
-                                            fontWeight: 600,
-                                            color: "#333",
-                                            transition: "all 0.3s ease",
-                                        }}
-                                    >
-                                        Quiz
-                                    </a>
-                                </li>
+                    {/* Left Content */}
+                    <div className="col-lg-8 mb-4">
+                        <div className="bg-white rounded p-4 shadow-sm">
+                            <ul className="nav nav-pills mb-4 gap-2" id="tabs">
+                                {["Course", "Curriculum", "Quiz"].map((tab) => (
+                                    <li className="nav-item" key={tab}>
+                                        <a
+                                            href={`#${tab}`}
+                                            data-bs-toggle="tab"
+                                            className={`nav-link ${tab === "Course" ? "active" : ""}`}
+                                            role="tab"
+                                        >
+                                            {tab}
+                                        </a>
+                                    </li>
+                                ))}
                             </ul>
 
                             <div className="tab-content">
-                                {/* Tab 1: Description */}
+                                {/* Course Info */}
                                 <div id="Course" className="tab-pane fade show active">
-                                    <div className="description-content">
-                                        <h3>Description</h3>
-                                        {Array.isArray(data.description) ? (
-                                            data.description.map((block: any, index: number) => (
-                                                <p key={index}>{block.children?.[0]?.text || ""}</p>
-                                            ))
-                                        ) : (
-                                            <p>{data.description || "No description available."}</p>
-                                        )}
-                                    </div>
+                                    <h3>Description</h3>
+                                    {Array.isArray(data.description) ? (
+                                        data.description.map((block: any, i: number) => (
+                                            <p key={i}>{block.children?.[0]?.text || ""}</p>
+                                        ))
+                                    ) : (
+                                        <p>{data.description}</p>
+                                    )}
                                 </div>
 
-                                {/* Tab 2: Curriculum */}
+                                {/* Curriculum */}
                                 <div id="Curriculum" className="tab-pane fade">
-                                    <div className="course-curriculum-items">
-                                        <h3>Course Curriculum</h3>
-                                        <div className="accordion" id="accordionExample">
-                                            <div className="accordion-item">
-                                                <h2 className="accordion-header" id="heading0">
-                                                    <button
-                                                        className="accordion-button"
-                                                        type="button"
-                                                        data-bs-toggle="collapse"
-                                                        data-bs-target="#collapse0"
-                                                        aria-expanded="true"
-                                                        aria-controls="collapse0"
-                                                    >
-                                                        Course Video
-                                                    </button>
-                                                </h2>
-                                                <div
-                                                    id="collapse0"
-                                                    className="accordion-collapse collapse show"
-                                                    aria-labelledby="heading0"
-                                                    data-bs-parent="#accordionExample"
-                                                >
-                                                    <div className="accordion-body">
-                                                        {Array.isArray(data.video) && data.video.length > 0 ? (
-                                                            data.video.map((vid: any, idx: number) => (
-                                                                <video
-                                                                    key={idx}
-                                                                    controls
-                                                                    style={{
-                                                                        width: "100%",
-                                                                        borderRadius: "8px",
-                                                                        backgroundColor: "#000",
-                                                                        marginBottom: "1rem",
-                                                                    }}
-                                                                    src={`http://localhost:1337${vid.url}`}
-                                                                >
-                                                                    Your browser does not support the video tag.
-                                                                </video>
-                                                            ))
-                                                        ) : (
-                                                            <p className="text-muted">Video not available.</p>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <h3>Course Curriculum</h3>
+                                    {Array.isArray(data.video) && data.video.length > 0 ? (
+                                        data.video.map((vid: any, idx: number) => (
+                                            <video
+                                                key={idx}
+                                                controls
+                                                className="w-100 rounded my-3"
+                                                src={`${API_URL}${vid.url}`}
+                                            />
+                                        ))
+                                    ) : (
+                                        <p className="text-muted">No video available.</p>
+                                    )}
                                 </div>
 
-                                {/* Tab 3: Quiz */}
+                                {/* Quiz */}
                                 <div id="Quiz" className="tab-pane fade">
-                                    <div className="course-quiz-content">
-                                        <h3 className="mb-4">Quiz</h3>
-
-                                        {!quizStarted ? (
-                                            <div className="text-center">
-                                                <button className="btn btn-success" onClick={() => setQuizStarted(true)}>
-                                                    Start Quiz
-                                                </button>
+                                    <h3 className="mb-3">Quiz</h3>
+                                    {!quizStarted ? (
+                                        <div className="text-center">
+                                            <button className="btn btn-success" onClick={() => setQuizStarted(true)}>
+                                                Start Quiz
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="mb-3 text-end">
+                                                <span className="badge bg-danger">
+                                                    Time Left: {Math.floor(timeLeft / 60).toString().padStart(2, '0')}:
+                                                    {(timeLeft % 60).toString().padStart(2, '0')}
+                                                </span>
                                             </div>
-                                        ) : (
-                                            <>
-                                                <div className="mb-4 text-end">
-                                                    <span className="badge bg-warning fs-6">
-                                                        Time Left: {Math.floor(timeLeft / 60)
-                                                            .toString()
-                                                            .padStart(2, '0')}:{(timeLeft % 60).toString().padStart(2, '0')}
-                                                    </span>
+
+                                            {data.quizzes?.[0]?.questions?.map((q: any, index: number) => (
+                                                <div key={q.id} className="mb-4 p-3 border rounded bg-light">
+                                                    <p className="fw-bold">{index + 1}. {q.questionText}</p>
+                                                    {q.answers.map((ans: any) => (
+                                                        <div key={ans.id} className="form-check">
+                                                            <input
+                                                                className="form-check-input"
+                                                                type="radio"
+                                                                name={`question-${q.id}`}
+                                                                id={`answer-${ans.id}`}
+                                                                value={ans.id}
+                                                                checked={selectedAnswers[q.id] === ans.id}
+                                                                onChange={() =>
+                                                                    setSelectedAnswers(prev => ({ ...prev, [q.id]: ans.id }))
+                                                                }
+                                                            />
+                                                            <label className="form-check-label" htmlFor={`answer-${ans.id}`}>
+                                                                {ans.text}
+                                                            </label>
+                                                        </div>
+                                                    ))}
                                                 </div>
+                                            ))}
 
-                                                {data.quizzes?.[0]?.questions?.map((question: any, index: number) => (
-                                                    <div key={question.id} className="mb-4">
-                                                        <p className="fw-bold">{index + 1}. {question.questionText}</p>
-                                                        {question.answers?.map((answer: any) => (
-                                                            <div key={answer.id} className="form-check">
-                                                                <input
-                                                                    className="form-check-input"
-                                                                    type="radio"
-                                                                    name={`question-${question.id}`}
-                                                                    id={`answer-${answer.id}`}
-                                                                    value={answer.id}
-                                                                    onChange={() =>
-                                                                        setSelectedAnswers(prev => ({
-                                                                            ...prev,
-                                                                            [question.id]: answer.id
-                                                                        }))
-                                                                    }
-                                                                    checked={selectedAnswers[question.id] === answer.id}
-                                                                />
-                                                                <label className="form-check-label" htmlFor={`answer-${answer.id}`}>
-                                                                    {answer.text}
-                                                                </label>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                ))}
-
-                                                <button className="btn btn-primary mt-4" onClick={handleSubmitQuiz}>
+                                            <div className="text-end">
+                                                <button className="btn btn-primary" onClick={handleSubmitQuiz}>
                                                     Submit Quiz
                                                 </button>
-                                            </>
-                                        )}
-
-
-
-
-                                        {quizResult && (
-                                            <div className="alert alert-info mt-4">
-                                                <p><strong>Score:</strong> {quizResult.score}%</p>
-                                                <p><strong>Correct:</strong> {quizResult.correctAnswers} / {quizResult.totalQuestions}</p>
-                                                <p><strong>Status:</strong> {quizResult.passed ? 'passed 🎉' : 'Failed ❌'}</p>
                                             </div>
-                                        )}
-                                    </div>
+                                        </>
+                                    )}
+
+                                    {quizResult && (
+                                        <div className="alert alert-info mt-4">
+                                            <p><strong>Score:</strong> {quizResult.score}%</p>
+                                            <p><strong>Correct:</strong> {quizResult.correctAnswers} / {quizResult.totalQuestions}</p>
+                                            <p><strong>Status:</strong> {quizResult.passed ? "Passed 🎉" : "Failed ❌"}</p>
+                                        </div>
+                                    )}
                                 </div>
-
-
-
-
-
                             </div>
                         </div>
                     </div>
 
-                    {/* KANAN: Sidebar (tetap rapi) */}
+                    {/* Sidebar */}
                     <div className="col-lg-4">
-                        <div className="courses-sidebar-area sticky-style">
-                            <div
-                                className="card"
-                                style={{
-                                    border: "1px solid #ddd",
-                                    borderRadius: "10px",
-                                    padding: "20px",
-                                    boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-                                }}
-                            >
-                                <img
-                                    src={
-                                        data.thumbnail?.url
-                                            ? `http://localhost:1337${data.thumbnail.url}`
-                                            : "/assets/img/default-thumbnail.jpg"
-                                    }
-                                    alt={data.title}
-                                    className="img-fluid mb-3 rounded"
-                                    style={{ maxHeight: "200px", objectFit: "cover", width: "100%" }}
-                                />
+                        <div className="bg-white p-4 rounded shadow-sm">
+                            <img
+                                src={data.thumbnail?.url ? `${API_URL}${data.thumbnail.url}` : "/assets/img/default-thumbnail.jpg"}
+                                alt={data.title}
+                                className="img-fluid rounded mb-3"
+                                style={{ objectFit: "cover", height: "200px", width: "100%" }}
+                            />
+                            <h5 className="text-muted">{data.category}</h5>
+                            <h4 className="fw-bold">{data.title}</h4>
+                            <p className="text-primary fs-5">${data.price}</p>
 
-                                <h5 className="text-muted mb-1">{data.category}</h5>
-                                <h4 className="fw-bold mb-3">{data.title}</h4>
-
-                                <div className="d-flex flex-wrap gap-2 mb-3">
-                                    {[1, 2, 3, 4, 5, 6].map((i) => (
-                                        <img
-                                            key={i}
-                                            src={`/assets/img/courses/a${i}.png`}
-                                            alt={`arrow-${i}`}
-                                            style={{ width: "24px" }}
-                                        />
-                                    ))}
-                                </div>
-
-                                <h4 className="text-primary mb-3">${data.price}</h4>
-
-                                <div className="d-grid gap-2 mb-4">
-                                    <Link to={`/courses-details/${data.slug}`} className="theme-btn">
-                                        Add to Cart
-                                    </Link>
-                                    <Link to={`/courses-details/${data.slug}`} className="theme-btn style-2">
-                                        Buy Course
-                                    </Link>
-                                </div>
-
-                                <h5 className="mb-3">Course Includes:</h5>
-                                <ul className="list-unstyled text-secondary mb-4">
-                                    {[
-                                        { icon: "chalkboard-teacher", label: "Instructor", value: data.instructor?.username },
-                                        { icon: "user", label: "Lessons", value: data.video?.length || 0 },
-                                        { icon: "clock", label: "Duration", value: data.duration },
-                                        { icon: "user", label: "Students", value: data.studentsCount },
-                                        { icon: "globe", label: "Language", value: data.language },
-                                        { icon: "signal-alt", label: "Skill Level", value: data.level },
-                                        { icon: "medal", label: "Certifications", value: data.certification ? "Yes" : "No" },
-                                    ].map((item, index) => (
-                                        <li
-                                            key={index}
-                                            style={{
-                                                borderBottom: index !== 6 ? "1px solid #ddd" : "none",
-                                                paddingBottom: "10px",
-                                                marginBottom: "10px",
-                                            }}
-                                        >
-                                            <i className={`far fa-${item.icon} me-2`}></i> {item.label}:{" "}
-                                            <span className="text-dark">{item.value}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-
-                                <Link to={`/courses-details/${data.slug}`} className="share-btn">
-                                    <i className="fas fa-share me-2"></i> Share this course
+                            <div className="d-grid gap-2 my-3">
+                                <Link to={`/courses-details/${data.slug}`} className="btn btn-outline-primary">
+                                    Add to Cart
+                                </Link>
+                                <Link to={`/courses-details/${data.slug}`} className="btn btn-primary">
+                                    Buy Course
                                 </Link>
                             </div>
+
+                            <ul className="list-unstyled text-secondary">
+                                <li><strong>Instructor:</strong> {data.instructor?.username}</li>
+                                <li><strong>Lessons:</strong> {data.video?.length || 0}</li>
+                                <li><strong>Duration:</strong> {data.duration}</li>
+                                <li><strong>Students:</strong> {data.studentsCount}</li>
+                                <li><strong>Language:</strong> {data.language}</li>
+                                <li><strong>Level:</strong> {data.level}</li>
+                                <li><strong>Certification:</strong> {data.certification ? "Yes" : "No"}</li>
+                            </ul>
+
+                            <Link to={`/courses-details/${data.slug}`} className="btn btn-sm btn-outline-secondary w-100 mt-3">
+                                <i className="fas fa-share me-2"></i> Share this course
+                            </Link>
                         </div>
                     </div>
                 </div>
