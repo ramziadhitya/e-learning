@@ -8,8 +8,6 @@ import qs from "qs";
 const API_URL = import.meta.env.VITE_API_URL;
 
 
-// ... (imports tetap sama)
-
 const CoursesDetailsArea = () => {
     const { slug } = useParams<{ slug: string }>();
     const [course, setCourse] = useState<any>(null);
@@ -101,13 +99,32 @@ const CoursesDetailsArea = () => {
         return () => clearTimeout(timer);
     }, [quizStarted, timeLeft]);
 
-    if (loading) return <p className="text-center py-5">Loading...</p>;
-    if (!course) return <p className="text-center py-5">Course not found</p>;
+    if (loading)
+        return (
+            <section className="pt-5 pb-5 bg-light" style={{ minHeight: "600px" }}>
+                <div className="container">
+                    <div className="text-center py-5">
+                        <p>Loading...</p>
+                    </div>
+                </div>
+            </section>
+        );
+
+    if (!course)
+        return (
+            <section className="pt-5 pb-5 bg-light" style={{ minHeight: "600px" }}>
+                <div className="container">
+                    <div className="text-center py-5">
+                        <p>Course not found</p>
+                    </div>
+                </div>
+            </section>
+        );
 
     const data = course;
 
     return (
-        <section className="pt-5 pb-5 bg-light">
+        <section className="pt-5 pb-5 bg-light" style={{ minHeight: "600px" }}>
             <div className="container">
                 <div className="row">
                     {/* Left Content */}
@@ -270,3 +287,4 @@ const CoursesDetailsArea = () => {
     );
 };
 export default CoursesDetailsArea;
+
