@@ -147,7 +147,7 @@ const CoursesDetailsArea = () => {
                             </ul>
 
                             {/* Tab Content */}
-                            <div className="tab-content" style={{ minHeight: "400px" }}>
+                            <div className="tab-content" style={{ minHeight: "500px", transition: "min-height 0.3s ease" }}>
                                 {/* Course Info */}
                                 <div id="Course" className="tab-pane fade show active">
                                     <h3>Description</h3>
