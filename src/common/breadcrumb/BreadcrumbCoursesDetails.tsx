@@ -55,12 +55,12 @@ const BreadcrumbCoursesDetails = () => {
 
     return (
         <section className="breadcrumb-wrapper style-2">
-            <div className="shape-1">
+            {/* <div className="shape-1">
                 <img src="/assets/img/breadcrumb/shape-1.png" alt="img" loading="lazy" />
             </div>
             <div className="shape-2">
                 <img src="/assets/img/breadcrumb/shape-2.png" alt="img" loading="lazy" />
-            </div>
+            </div> */}
             <div className="dot-shape">
                 <img src="/assets/img/breadcrumb/dot-shape.png" alt="img" loading="lazy" />
             </div>
