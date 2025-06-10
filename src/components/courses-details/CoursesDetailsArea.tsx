@@ -242,7 +242,7 @@ const CoursesDetailsArea = () => {
                     </div>
 
                     {/* Sidebar */}
-                    <div className="col-lg-4">
+                    {/* <div className="col-lg-4">
                         <div className="bg-white p-4 rounded shadow-sm">
                             <img
                                 src={data.thumbnail?.url ? `${API_URL}${data.thumbnail.url}` : "/assets/img/default-thumbnail.jpg"}
@@ -280,7 +280,7 @@ const CoursesDetailsArea = () => {
                                 <i className="fas fa-share me-2"></i> Share this course
                             </Link>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </section>
