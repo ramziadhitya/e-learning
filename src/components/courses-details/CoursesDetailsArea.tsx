@@ -121,8 +121,8 @@ const CoursesDetailsArea = () => {
                                 <button
                                     key={tab}
                                     className={`pb-2 px-3 text-sm font-semibold border-b-2 transition ${activeTab === tab
-                                            ? "border-blue-500 text-blue-600"
-                                            : "border-transparent text-gray-500 hover:text-blue-500"
+                                        ? "border-blue-500 text-blue-600"
+                                        : "border-transparent text-gray-500 hover:text-blue-500"
                                         }`}
                                     onClick={() => setActiveTab(tab)}
                                 >
@@ -132,13 +132,13 @@ const CoursesDetailsArea = () => {
                         </div>
 
                         {/* Tab Content */}
-                        <div className="space-y-4">
+                        <div className="space-y-4 min-h-[400px]">
                             {activeTab === "Course" && (
                                 <>
                                     <h3 className="text-xl font-semibold">Description</h3>
                                     {Array.isArray(data.description) ? (
                                         data.description.map((block: any, i: number) => (
-                                            <p key={i} className="text-gray-700">{block.children?.[0]?.text || ""}</p>
+                                            <p key={i} className="text-gray-700">{block?.children?.[0]?.text || ""}</p>
                                         ))
                                     ) : (
                                         <p className="text-gray-700">{data.description}</p>
@@ -151,12 +151,13 @@ const CoursesDetailsArea = () => {
                                     <h3 className="text-xl font-semibold">Course Curriculum</h3>
                                     {Array.isArray(data.video) && data.video.length > 0 ? (
                                         data.video.map((vid: any, idx: number) => (
-                                            <video
-                                                key={idx}
-                                                controls
-                                                className="w-full rounded"
-                                                src={`${API_URL}${vid.url}`}
-                                            />
+                                            <div key={idx} className="w-full aspect-video rounded overflow-hidden">
+                                                <video
+                                                    controls
+                                                    className="w-full h-full object-cover"
+                                                    src={`${API_URL}${vid.url}`}
+                                                />
+                                            </div>
                                         ))
                                     ) : (
                                         <p className="text-gray-500">No video available.</p>
@@ -232,12 +233,15 @@ const CoursesDetailsArea = () => {
 
                     {/* Sidebar */}
                     <div className="bg-white rounded-lg shadow p-6 space-y-4">
-                        <img
-                            src={data.thumbnail?.url ? `${API_URL}${data.thumbnail.url}` : "/assets/img/default-thumbnail.jpg"}
-                            alt={data.title}
-                            className="w-full h-48 object-cover rounded"
-                            loading="lazy"
-                        />
+                        <div className="w-full aspect-[16/9] rounded overflow-hidden">
+                            <img
+                                src={data.thumbnail?.url ? `${API_URL}${data.thumbnail.url}` : "/assets/img/default-thumbnail.jpg"}
+                                alt={data.title}
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                            />
+                        </div>
+
                         <h5 className="text-sm text-gray-500">{data.category}</h5>
                         <h4 className="text-lg font-bold">{data.title}</h4>
                         <p className="text-blue-600 text-xl font-semibold">${data.price}</p>
