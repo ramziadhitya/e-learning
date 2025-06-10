@@ -1,80 +1,19 @@
-import { Link } from "react-router-dom";
-
-
-
 const FooterOne = ({ style_2 }: any) => {
     return (
-        <>
-            <footer
-                className={`footer-section fix ${style_2 ? "" : "footer-bg"}`}
-                style={{ minHeight: "300px" }}
-            >
-                <div className="container" >
-                    <div className={`footer-widget-wrapper ${style_2 ? "style-4" : ""}`}>
-                        <div className="row">
-                            <div className="col-xl-3 col-lg-4 col-md-6 ">
-                                <div className="single-footer-widget">
-                                    <div className="widget-head">
-
-                                    </div>
-                                    <div className="footer-content">
-                                        <p>
-                                            Education the foundation personal and societal growth, empowering individuals with knowledge.
-                                        </p>
-                                        <div className="social-icon">
-                                            <a href="#"><i className="fab fa-facebook-f"></i></a>
-                                            <a href="#"><i className="fab fa-instagram"></i></a>
-                                            <a href="#"><i className="fab fa-dribbble"></i></a>
-                                            <a href="#"><i className="fab fa-behance"></i></a>
-                                            <a href="#"><i className="fab fa-linkedin-in"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xl-3 col-lg-4 col-md-6 ps-lg-5">
-                                <div className="single-footer-widget">
-                                    <div className="widget-head">
-                                        <h3>Online Platform</h3>
-                                    </div>
-                                    <ul className="list-area">
-                                        <li><Link to="/courses">Coursera</Link></li>
-                                        <li><Link to="/courses">MasterClass</Link></li>
-                                        <li><Link to="/courses">Skillshare</Link></li>
-                                        <li><Link to="/courses">LinkedIn Learning</Link></li>
-                                        <li><Link to="/courses">FutureLearn</Link></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div className="col-xl-3 col-lg-4 col-md-6 ps-lg-5 ">
-                                <div className="single-footer-widget">
-                                    <div className="widget-head">
-                                        <h3>Quick Link</h3>
-                                    </div>
-                                    <ul className="list-area">
-                                        <li><Link to="/about">About Eduspace</Link></li>
-                                        <li><Link to="/instructor">Instructors</Link></li>
-                                        <li><Link to="/courses">Best Courses</Link></li>
-                                        <li><Link to="/contact">Student Reviews</Link></li>
-                                        <li><Link to="/faq">FAQs</Link></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div className="col-xl-3 col-lg-4 col-md-6 ps-xl-5 ">
-                                <div className="single-footer-widget">
-                                    <div className="widget-head">
-                                        <h3>Contact Us</h3>
-                                    </div>
-
-                                </div>
-                            </div>
+        <footer
+            className={`footer-section fix ${style_2 ? "" : "footer-bg"}`}
+            style={{ minHeight: "300px" }}
+        >
+            <div className="container">
+                <div className={`footer-widget-wrapper ${style_2 ? "style-4" : ""}`}>
+                    <div className="row">
+                        <div className="col-12">
+                            {/* Kosongkan isi footer, tetap jaga struktur untuk stabilitas */}
                         </div>
                     </div>
-
                 </div>
-
-
-            </footer>
-        </>
+            </div>
+        </footer>
     );
 };
 
