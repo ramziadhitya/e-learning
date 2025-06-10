@@ -1,5 +1,3 @@
-// CoursesDetailsArea.tsx
-
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
@@ -7,6 +5,7 @@ import qs from "qs";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const tabs = ["Course", "Curriculum", "Quiz"];
 
 const CoursesDetailsArea = () => {
     const { slug } = useParams<{ slug: string }>();
@@ -16,6 +15,7 @@ const CoursesDetailsArea = () => {
     const [quizResult, setQuizResult] = useState<any>(null);
     const [quizStarted, setQuizStarted] = useState(false);
     const [timeLeft, setTimeLeft] = useState(60);
+    const [activeTab, setActiveTab] = useState("Course");
 
     const handleSubmitQuiz = async () => {
         const quiz = course?.quizzes?.[0];
@@ -99,130 +99,119 @@ const CoursesDetailsArea = () => {
         return () => clearTimeout(timer);
     }, [quizStarted, timeLeft]);
 
-    if (loading)
+    if (loading || !course) {
         return (
-            <section className="pt-5 pb-5 bg-light" style={{ minHeight: "600px" }}>
-                <div className="container">
-                    <div className="text-center py-5">
-                        <p>Loading...</p>
-                    </div>
-                </div>
+            <section className="min-h-screen bg-gray-100 flex items-center justify-center">
+                <p>{loading ? "Loading..." : "Course not found"}</p>
             </section>
         );
-
-    if (!course)
-        return (
-            <section className="pt-5 pb-5 bg-light" style={{ minHeight: "600px" }}>
-                <div className="container">
-                    <div className="text-center py-5">
-                        <p>Course not found</p>
-                    </div>
-                </div>
-            </section>
-        );
+    }
 
     const data = course;
 
     return (
-        <section className="pt-5 pb-5 bg-light" style={{ minHeight: "600px" }}>
-            <div className="container">
-                <div className="row">
-                    {/* Left Content */}
-                    <div className="col-lg-8 mb-4">
-                        <div className="bg-white rounded p-4 shadow-sm">
-                            {/* Tabs */}
-                            <ul className="nav nav-pills mb-4 gap-2" id="tabs">
-                                {["Course", "Curriculum", "Quiz"].map((tab) => (
-                                    <li className="nav-item" key={tab}>
-                                        <a
-                                            href={`#${tab}`}
-                                            data-bs-toggle="tab"
-                                            className={`nav-link ${tab === "Course" ? "active" : ""}`}
-                                            role="tab"
-                                        >
-                                            {tab}
-                                        </a>
-                                    </li>
-                                ))}
-                            </ul>
+        <section className="bg-gray-100 py-10 min-h-screen">
+            <div className="max-w-7xl mx-auto px-4 lg:px-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Main Content */}
+                    <div className="lg:col-span-2 bg-white rounded-lg shadow p-6">
+                        {/* Tabs */}
+                        <div className="flex gap-4 border-b mb-6">
+                            {tabs.map((tab) => (
+                                <button
+                                    key={tab}
+                                    className={`pb-2 px-3 text-sm font-semibold border-b-2 transition ${activeTab === tab
+                                            ? "border-blue-500 text-blue-600"
+                                            : "border-transparent text-gray-500 hover:text-blue-500"
+                                        }`}
+                                    onClick={() => setActiveTab(tab)}
+                                >
+                                    {tab}
+                                </button>
+                            ))}
+                        </div>
 
-                            {/* Tab Content */}
-                            <div className="tab-content" style={{ minHeight: "500px", transition: "min-height 0.3s ease" }}>
-                                {/* Course Info */}
-                                <div id="Course" className="tab-pane fade show active">
-                                    <h3>Description</h3>
+                        {/* Tab Content */}
+                        <div className="space-y-4">
+                            {activeTab === "Course" && (
+                                <>
+                                    <h3 className="text-xl font-semibold">Description</h3>
                                     {Array.isArray(data.description) ? (
                                         data.description.map((block: any, i: number) => (
-                                            <p key={i}>{block.children?.[0]?.text || ""}</p>
+                                            <p key={i} className="text-gray-700">{block.children?.[0]?.text || ""}</p>
                                         ))
                                     ) : (
-                                        <p>{data.description}</p>
+                                        <p className="text-gray-700">{data.description}</p>
                                     )}
-                                </div>
+                                </>
+                            )}
 
-                                {/* Curriculum */}
-                                <div id="Curriculum" className="tab-pane fade">
-                                    <h3>Course Curriculum</h3>
+                            {activeTab === "Curriculum" && (
+                                <>
+                                    <h3 className="text-xl font-semibold">Course Curriculum</h3>
                                     {Array.isArray(data.video) && data.video.length > 0 ? (
                                         data.video.map((vid: any, idx: number) => (
                                             <video
                                                 key={idx}
                                                 controls
-                                                className="w-100 rounded my-3"
+                                                className="w-full rounded"
                                                 src={`${API_URL}${vid.url}`}
-                                                preload="metadata"
                                             />
                                         ))
                                     ) : (
-                                        <p className="text-muted">No video available.</p>
+                                        <p className="text-gray-500">No video available.</p>
                                     )}
-                                </div>
+                                </>
+                            )}
 
-                                {/* Quiz */}
-                                <div id="Quiz" className="tab-pane fade">
-                                    <h3 className="mb-3">Quiz</h3>
+                            {activeTab === "Quiz" && (
+                                <>
+                                    <h3 className="text-xl font-semibold">Quiz</h3>
 
                                     {!quizStarted ? (
                                         <div className="text-center">
-                                            <button className="btn btn-success" onClick={() => setQuizStarted(true)}>
+                                            <button
+                                                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                                                onClick={() => setQuizStarted(true)}
+                                            >
                                                 Start Quiz
                                             </button>
                                         </div>
                                     ) : (
                                         <>
-                                            <div className="mb-3 text-end">
-                                                <span className="badge bg-danger">
+                                            <div className="text-right mb-2">
+                                                <span className="bg-red-500 text-white px-2 py-1 rounded text-sm">
                                                     Time Left: {Math.floor(timeLeft / 60).toString().padStart(2, '0')}:
                                                     {(timeLeft % 60).toString().padStart(2, '0')}
                                                 </span>
                                             </div>
 
                                             {data.quizzes?.[0]?.questions?.map((q: any, index: number) => (
-                                                <div key={q.id} className="mb-4 p-3 border rounded bg-light">
-                                                    <p className="fw-bold">{index + 1}. {q.questionText}</p>
+                                                <div key={q.id} className="p-4 bg-gray-100 rounded mb-4">
+                                                    <p className="font-semibold mb-2">{index + 1}. {q.questionText}</p>
                                                     {q.answers.map((ans: any) => (
-                                                        <div key={ans.id} className="form-check">
+                                                        <label key={ans.id} className="block mb-1">
                                                             <input
-                                                                className="form-check-input"
                                                                 type="radio"
+                                                                className="mr-2"
                                                                 name={`question-${q.id}`}
-                                                                id={`answer-${ans.id}`}
                                                                 value={ans.id}
                                                                 checked={selectedAnswers[q.id] === ans.id}
                                                                 onChange={() =>
                                                                     setSelectedAnswers(prev => ({ ...prev, [q.id]: ans.id }))
                                                                 }
                                                             />
-                                                            <label className="form-check-label" htmlFor={`answer-${ans.id}`}>
-                                                                {ans.text}
-                                                            </label>
-                                                        </div>
+                                                            {ans.text}
+                                                        </label>
                                                     ))}
                                                 </div>
                                             ))}
 
-                                            <div className="text-end">
-                                                <button className="btn btn-primary" onClick={handleSubmitQuiz}>
+                                            <div className="text-right">
+                                                <button
+                                                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                                    onClick={handleSubmitQuiz}
+                                                >
                                                     Submit Quiz
                                                 </button>
                                             </div>
@@ -230,61 +219,56 @@ const CoursesDetailsArea = () => {
                                     )}
 
                                     {quizResult && (
-                                        <div className="alert alert-info mt-4">
+                                        <div className="mt-4 p-4 border rounded bg-blue-50 text-blue-800">
                                             <p><strong>Score:</strong> {quizResult.score}%</p>
                                             <p><strong>Correct:</strong> {quizResult.correctAnswers} / {quizResult.totalQuestions}</p>
                                             <p><strong>Status:</strong> {quizResult.passed ? "Passed 🎉" : "Failed ❌"}</p>
                                         </div>
                                     )}
-                                </div>
-                            </div>
+                                </>
+                            )}
                         </div>
                     </div>
 
                     {/* Sidebar */}
-                    <div className="col-lg-4">
-                        <div className="bg-white p-4 rounded shadow-sm">
-                            <img
-                                src={data.thumbnail?.url ? `${API_URL}${data.thumbnail.url}` : "/assets/img/default-thumbnail.jpg"}
-                                alt={data.title}
-                                width="100%"
-                                height="200"
-                                className="img-fluid rounded mb-3"
-                                loading="lazy"
-                                style={{ objectFit: "cover", width: "100%", height: "200px" }}
-                            />
-                            <h5 className="text-muted">{data.category}</h5>
-                            <h4 className="fw-bold">{data.title}</h4>
-                            <p className="text-primary fs-5">${data.price}</p>
+                    <div className="bg-white rounded-lg shadow p-6 space-y-4">
+                        <img
+                            src={data.thumbnail?.url ? `${API_URL}${data.thumbnail.url}` : "/assets/img/default-thumbnail.jpg"}
+                            alt={data.title}
+                            className="w-full h-48 object-cover rounded"
+                            loading="lazy"
+                        />
+                        <h5 className="text-sm text-gray-500">{data.category}</h5>
+                        <h4 className="text-lg font-bold">{data.title}</h4>
+                        <p className="text-blue-600 text-xl font-semibold">${data.price}</p>
 
-                            <div className="d-grid gap-2 my-3">
-                                <Link to={`/courses-details/${data.slug}`} className="btn btn-outline-primary">
-                                    Add to Cart
-                                </Link>
-                                <Link to={`/courses-details/${data.slug}`} className="btn btn-primary">
-                                    Buy Course
-                                </Link>
-                            </div>
-
-                            <ul className="list-unstyled text-secondary">
-                                <li><strong>Instructor:</strong> {data.instructor?.username}</li>
-                                <li><strong>Lessons:</strong> {data.video?.length || 0}</li>
-                                <li><strong>Duration:</strong> {data.duration}</li>
-                                <li><strong>Students:</strong> {data.studentsCount}</li>
-                                <li><strong>Language:</strong> {data.language}</li>
-                                <li><strong>Level:</strong> {data.level}</li>
-                                <li><strong>Certification:</strong> {data.certification ? "Yes" : "No"}</li>
-                            </ul>
-
-                            <Link to={`/courses-details/${data.slug}`} className="btn btn-sm btn-outline-secondary w-100 mt-3">
-                                <i className="fas fa-share me-2"></i> Share this course
+                        <div className="space-y-2">
+                            <Link to={`/courses-details/${data.slug}`} className="block w-full text-center border border-blue-600 text-blue-600 px-4 py-2 rounded hover:bg-blue-50">
+                                Add to Cart
+                            </Link>
+                            <Link to={`/courses-details/${data.slug}`} className="block w-full text-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                Buy Course
                             </Link>
                         </div>
+
+                        <ul className="text-sm text-gray-600 space-y-1">
+                            <li><strong>Instructor:</strong> {data.instructor?.username}</li>
+                            <li><strong>Lessons:</strong> {data.video?.length || 0}</li>
+                            <li><strong>Duration:</strong> {data.duration}</li>
+                            <li><strong>Students:</strong> {data.studentsCount}</li>
+                            <li><strong>Language:</strong> {data.language}</li>
+                            <li><strong>Level:</strong> {data.level}</li>
+                            <li><strong>Certification:</strong> {data.certification ? "Yes" : "No"}</li>
+                        </ul>
+
+                        <Link to={`/courses-details/${data.slug}`} className="text-sm text-gray-500 underline">
+                            Share this course
+                        </Link>
                     </div>
                 </div>
             </div>
         </section>
     );
 };
-export default CoursesDetailsArea;
 
+export default CoursesDetailsArea;
