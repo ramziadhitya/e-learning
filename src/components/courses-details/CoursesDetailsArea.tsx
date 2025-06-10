@@ -101,11 +101,12 @@ const CoursesDetailsArea = () => {
 
     if (loading || !course) {
         return (
-            <section className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <section className="min-h-[300px] bg-gray-100 flex items-center justify-center py-10">
                 <p>{loading ? "Loading..." : "Course not found"}</p>
             </section>
         );
     }
+
 
     const data = course;
 
