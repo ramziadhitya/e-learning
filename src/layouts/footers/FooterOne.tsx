@@ -31,7 +31,7 @@ const FooterOne = ({ style_2 }: any) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-xl-3 col-lg-4 col-md-6 ps-lg-5 wow fadeInUp" data-wow-delay=".4s">
+                            <div className="col-xl-3 col-lg-4 col-md-6 ps-lg-5">
                                 <div className="single-footer-widget">
                                     <div className="widget-head">
                                         <h3>Online Platform</h3>
@@ -45,7 +45,7 @@ const FooterOne = ({ style_2 }: any) => {
                                     </ul>
                                 </div>
                             </div>
-                            <div className="col-xl-3 col-lg-4 col-md-6 ps-lg-5 wow fadeInUp" data-wow-delay=".6s">
+                            <div className="col-xl-3 col-lg-4 col-md-6 ps-lg-5 ">
                                 <div className="single-footer-widget">
                                     <div className="widget-head">
                                         <h3>Quick Link</h3>
@@ -59,29 +59,12 @@ const FooterOne = ({ style_2 }: any) => {
                                     </ul>
                                 </div>
                             </div>
-                            <div className="col-xl-3 col-lg-4 col-md-6 ps-xl-5 wow fadeInUp" data-wow-delay=".8s">
+                            <div className="col-xl-3 col-lg-4 col-md-6 ps-xl-5 ">
                                 <div className="single-footer-widget">
                                     <div className="widget-head">
                                         <h3>Contact Us</h3>
                                     </div>
-                                    <div className="footer-content">
-                                        <ul className="contact-info">
-                                            <li>
-                                                55 Main Street, 2nd block
-                                                Malborne, Australia
-                                            </li>
-                                            <li>
-                                                55 Main Street, 2nd block
-                                                Malborne, Australia
-                                            </li>
-                                            <li>
-                                                <a href="mailto:info@example.com" className="link">info@example.com</a>
-                                            </li>
-                                            <li>
-                                                <a href="tel:+0001238899">+000 (123) 88 99</a>
-                                            </li>
-                                        </ul>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
