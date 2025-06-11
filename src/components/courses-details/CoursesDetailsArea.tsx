@@ -1,6 +1,6 @@
 // CoursesDetailsArea.tsx
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import qs from "qs";
@@ -15,6 +15,10 @@ const CoursesDetailsArea = () => {
     const [quizResult, setQuizResult] = useState<any>(null);
     const [quizStarted, setQuizStarted] = useState(false);
     const [timeLeft, setTimeLeft] = useState(60);
+
+    // Refs for determining the height of the content areas
+    const leftContentRef = useRef<HTMLDivElement>(null);
+    const sidebarRef = useRef<HTMLDivElement>(null);
 
     const handleSubmitQuiz = async () => {
         const quiz = course?.quizzes?.[0];
@@ -96,21 +100,18 @@ const CoursesDetailsArea = () => {
         }
 
         return () => clearTimeout(timer);
-    }, [quizStarted, timeLeft]);
+    }, [quizStarted, timeLeft, handleSubmitQuiz]); // Added handleSubmitQuiz to dependencies
 
-    if (loading) {
-        return (
-            <div style={{ minHeight: "500px" }} className="p-4">
-                <div className="placeholder-glow">
-                    <div className="placeholder col-12 mb-3" style={{ height: "20px" }}></div>
-                    <div className="placeholder col-8 mb-3" style={{ height: "20px" }}></div>
-                    <div className="placeholder col-10" style={{ height: "20px" }}></div>
-                </div>
-            </div>
-        );
-    }
-    if (!course) return <p className="text-center py-5">Course not found</p>;
-
+    // Calculate dynamic min-height for the main content area based on quiz content
+    const calculateMinHeight = () => {
+        if (quizStarted && course?.quizzes?.[0]?.questions?.length > 0) {
+            // Estimate height per question and add some padding/button height
+            const estimatedQuestionHeight = 120; // Avg height of a question + its answers
+            const quizQuestionsCount = course.quizzes[0].questions.length;
+            return `${quizQuestionsCount * estimatedQuestionHeight + 200}px`; // Add extra for timer/button
+        }
+        return "700px"; // Default min-height for other tabs
+    };
 
     return (
         <section className="pt-5 pb-5 bg-light">
@@ -118,15 +119,21 @@ const CoursesDetailsArea = () => {
                 <div className="row">
                     {/* Left Content */}
                     <div className="col-lg-8 mb-4">
-                        <div className="bg-white rounded p-4 shadow-sm" style={{ minHeight: "600px" }}>
+                        <div
+                            ref={leftContentRef}
+                            className="bg-white rounded p-4 shadow-sm"
+                            style={{ minHeight: loading ? "600px" : calculateMinHeight() }} // Dynamic minHeight
+                        >
                             {loading ? (
                                 <div className="placeholder-glow">
-                                    <div className="placeholder col-12 mb-3" style={{ height: '30px' }}></div>
-                                    <div className="placeholder col-10 mb-2" style={{ height: '20px' }}></div>
-                                    <div className="placeholder col-10 mb-2" style={{ height: '20px' }}></div>
-                                    <div className="placeholder col-8 mb-2" style={{ height: '20px' }}></div>
-                                    <div className="placeholder col-12" style={{ height: '300px' }}></div>
+                                    <div className="placeholder col-12 mb-3" style={{ height: "30px" }}></div>
+                                    <div className="placeholder col-10 mb-2" style={{ height: "20px" }}></div>
+                                    <div className="placeholder col-10 mb-2" style={{ height: "20px" }}></div>
+                                    <div className="placeholder col-8 mb-2" style={{ height: "20px" }}></div>
+                                    <div className="placeholder col-12" style={{ height: "300px" }}></div>
                                 </div>
+                            ) : !course ? (
+                                <p className="text-center py-5">Course not found</p>
                             ) : (
                                 <>
                                     {/* Tabs */}
@@ -149,8 +156,8 @@ const CoursesDetailsArea = () => {
                                     <div
                                         className="tab-content position-relative overflow-hidden"
                                         style={{
-                                            minHeight: "700px", // tingkatkan jika quiz banyak soal
-                                            transition: "min-height 0.3s ease-in-out" // smooth transition
+                                            minHeight: calculateMinHeight(), // Apply dynamic height here too
+                                            transition: "min-height 0.3s ease-in-out", // smooth transition
                                         }}
                                     >
                                         {/* Course Info */}
@@ -170,7 +177,7 @@ const CoursesDetailsArea = () => {
                                             <h3>Course Curriculum</h3>
                                             {Array.isArray(course.video) && course.video.length > 0 ? (
                                                 course.video.map((vid: any, idx: number) => (
-                                                    <div key={idx} style={{ aspectRatio: '16/9', backgroundColor: '#000' }}>
+                                                    <div key={idx} style={{ aspectRatio: "16/9", backgroundColor: "#000" }}>
                                                         <video
                                                             controls
                                                             className="w-100 h-100 rounded my-3"
@@ -199,14 +206,16 @@ const CoursesDetailsArea = () => {
                                                 <>
                                                     <div className="mb-3 text-end">
                                                         <span className="badge bg-danger">
-                                                            Time Left: {Math.floor(timeLeft / 60).toString().padStart(2, '0')}:
-                                                            {(timeLeft % 60).toString().padStart(2, '0')}
+                                                            Time Left: {Math.floor(timeLeft / 60).toString().padStart(2, "0")}:
+                                                            {(timeLeft % 60).toString().padStart(2, "0")}
                                                         </span>
                                                     </div>
 
                                                     {course.quizzes?.[0]?.questions?.map((q: any, index: number) => (
                                                         <div key={q.id} className="mb-4 p-3 border rounded bg-light">
-                                                            <p className="fw-bold">{index + 1}. {q.questionText}</p>
+                                                            <p className="fw-bold">
+                                                                {index + 1}. {q.questionText}
+                                                            </p>
                                                             {q.answers.map((ans: any) => (
                                                                 <div key={ans.id} className="form-check">
                                                                     <input
@@ -217,7 +226,7 @@ const CoursesDetailsArea = () => {
                                                                         value={ans.id}
                                                                         checked={selectedAnswers[q.id] === ans.id}
                                                                         onChange={() =>
-                                                                            setSelectedAnswers(prev => ({ ...prev, [q.id]: ans.id }))
+                                                                            setSelectedAnswers((prev) => ({ ...prev, [q.id]: ans.id }))
                                                                         }
                                                                     />
                                                                     <label className="form-check-label" htmlFor={`answer-${ans.id}`}>
@@ -238,9 +247,16 @@ const CoursesDetailsArea = () => {
 
                                             {quizResult && (
                                                 <div className="alert alert-info mt-4">
-                                                    <p><strong>Score:</strong> {quizResult.score}%</p>
-                                                    <p><strong>Correct:</strong> {quizResult.correctAnswers} / {quizResult.totalQuestions}</p>
-                                                    <p><strong>Status:</strong> {quizResult.passed ? "Passed 🎉" : "Failed ❌"}</p>
+                                                    <p>
+                                                        <strong>Score:</strong> {quizResult.score}%
+                                                    </p>
+                                                    <p>
+                                                        <strong>Correct:</strong> {quizResult.correctAnswers} /{" "}
+                                                        {quizResult.totalQuestions}
+                                                    </p>
+                                                    <p>
+                                                        <strong>Status:</strong> {quizResult.passed ? "Passed 🎉" : "Failed ❌"}
+                                                    </p>
                                                 </div>
                                             )}
                                         </div>
@@ -252,7 +268,11 @@ const CoursesDetailsArea = () => {
 
                     {/* Sidebar */}
                     <div className="col-lg-4">
-                        <div className="bg-white p-4 rounded shadow-sm" style={{ minHeight: "600px" }}>
+                        <div
+                            ref={sidebarRef}
+                            className="bg-white p-4 rounded shadow-sm"
+                            style={{ minHeight: loading ? "600px" : "auto" }} // Keep minHeight for loading, then auto
+                        >
                             {loading ? (
                                 <div className="placeholder-glow" style={{ minHeight: "600px" }}>
                                     <div className="placeholder w-100 mb-3" style={{ height: "200px" }}></div>
@@ -265,7 +285,11 @@ const CoursesDetailsArea = () => {
                             ) : (
                                 <>
                                     <img
-                                        src={course.thumbnail?.url ? `${API_URL}${course.thumbnail.url}` : "/assets/img/default-thumbnail.jpg"}
+                                        src={
+                                            course.thumbnail?.url
+                                                ? `${API_URL}${course.thumbnail.url}`
+                                                : "/assets/img/default-thumbnail.jpg"
+                                        }
                                         alt={course.title}
                                         className="img-fluid rounded mb-3"
                                         loading="lazy"
@@ -287,16 +311,33 @@ const CoursesDetailsArea = () => {
                                     </div>
 
                                     <ul className="list-unstyled text-secondary">
-                                        <li><strong>Instructor:</strong> {course.instructor?.username}</li>
-                                        <li><strong>Lessons:</strong> {course.video?.length || 0}</li>
-                                        <li><strong>Duration:</strong> {course.duration}</li>
-                                        <li><strong>Students:</strong> {course.studentsCount}</li>
-                                        <li><strong>Language:</strong> {course.language}</li>
-                                        <li><strong>Level:</strong> {course.level}</li>
-                                        <li><strong>Certification:</strong> {course.certification ? "Yes" : "No"}</li>
+                                        <li>
+                                            <strong>Instructor:</strong> {course.instructor?.username}
+                                        </li>
+                                        <li>
+                                            <strong>Lessons:</strong> {course.video?.length || 0}
+                                        </li>
+                                        <li>
+                                            <strong>Duration:</strong> {course.duration}
+                                        </li>
+                                        <li>
+                                            <strong>Students:</strong> {course.studentsCount}
+                                        </li>
+                                        <li>
+                                            <strong>Language:</strong> {course.language}
+                                        </li>
+                                        <li>
+                                            <strong>Level:</strong> {course.level}
+                                        </li>
+                                        <li>
+                                            <strong>Certification:</strong> {course.certification ? "Yes" : "No"}
+                                        </li>
                                     </ul>
 
-                                    <Link to={`/courses-details/${course.slug}`} className="btn btn-sm btn-outline-secondary w-100 mt-3">
+                                    <Link
+                                        to={`/courses-details/${course.slug}`}
+                                        className="btn btn-sm btn-outline-secondary w-100 mt-3"
+                                    >
                                         <i className="fas fa-share me-2"></i> Share this course
                                     </Link>
                                 </>
@@ -306,7 +347,6 @@ const CoursesDetailsArea = () => {
                 </div>
             </div>
         </section>
-
     );
 };
 
