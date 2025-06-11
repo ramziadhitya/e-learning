@@ -100,7 +100,7 @@ const CoursesDetailsArea = () => {
 
     if (loading) {
         return (
-            <div style={{ minHeight: "500px" }} className="p-4">
+            <div className="p-4">
                 <div className="placeholder-glow">
                     <div className="placeholder col-12 mb-3" style={{ height: "20px" }}></div>
                     <div className="placeholder col-8 mb-3" style={{ height: "20px" }}></div>
