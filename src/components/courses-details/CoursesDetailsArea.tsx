@@ -146,7 +146,13 @@ const CoursesDetailsArea = () => {
                                     </ul>
 
                                     {/* Tab Content */}
-                                    <div className="tab-content position-relative overflow-hidden" style={{ minHeight: "500px" }}>
+                                    <div
+                                        className="tab-content position-relative overflow-hidden"
+                                        style={{
+                                            minHeight: "700px", // tingkatkan jika quiz banyak soal
+                                            transition: "min-height 0.3s ease-in-out" // smooth transition
+                                        }}
+                                    >
                                         {/* Course Info */}
                                         <div id="Course" className="tab-pane fade show active">
                                             <h3>Description</h3>
@@ -248,22 +254,23 @@ const CoursesDetailsArea = () => {
                     <div className="col-lg-4">
                         <div className="bg-white p-4 rounded shadow-sm" style={{ minHeight: "600px" }}>
                             {loading ? (
-                                <div className="placeholder-glow">
+                                <div className="placeholder-glow" style={{ minHeight: "600px" }}>
                                     <div className="placeholder w-100 mb-3" style={{ height: "200px" }}></div>
                                     <div className="placeholder col-6 mb-2" style={{ height: "20px" }}></div>
                                     <div className="placeholder col-10 mb-2" style={{ height: "30px" }}></div>
                                     <div className="placeholder col-4 mb-2" style={{ height: "20px" }}></div>
-                                    <div className="placeholder col-12 mb-2" style={{ height: "100px" }}></div>
+                                    <div className="placeholder col-12 mb-2" style={{ height: "250px" }}></div>
+                                    <div className="placeholder col-8 mb-2" style={{ height: "50px" }}></div>
                                 </div>
                             ) : (
                                 <>
                                     <img
                                         src={course.thumbnail?.url ? `${API_URL}${course.thumbnail.url}` : "/assets/img/default-thumbnail.jpg"}
                                         alt={course.title}
-                                        width="100%"
-                                        height="200"
                                         className="img-fluid rounded mb-3"
                                         loading="lazy"
+                                        width="640"
+                                        height="360"
                                         style={{ objectFit: "cover", width: "100%", height: "200px" }}
                                     />
                                     <h5 className="text-muted">{course.category}</h5>
