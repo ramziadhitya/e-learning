@@ -16,6 +16,7 @@ const CoursesDetailsArea = () => {
     const [quizStarted, setQuizStarted] = useState(false);
     const [timeLeft, setTimeLeft] = useState(60);
 
+
     const handleSubmitQuiz = async () => {
         const quiz = course?.quizzes?.[0];
         if (!quiz) return;
@@ -118,14 +119,28 @@ const CoursesDetailsArea = () => {
                 <div className="row">
                     {/* Left Content */}
                     <div className="col-lg-8 mb-4">
-                        <div className="bg-white rounded p-4 shadow-sm" style={{ minHeight: "600px" }}>
+                        <div className="bg-white rounded p-4 shadow-sm">
                             {loading ? (
                                 <div className="placeholder-glow">
-                                    <div className="placeholder col-12 mb-3" style={{ height: '30px' }}></div>
-                                    <div className="placeholder col-10 mb-2" style={{ height: '20px' }}></div>
-                                    <div className="placeholder col-10 mb-2" style={{ height: '20px' }}></div>
-                                    <div className="placeholder col-8 mb-2" style={{ height: '20px' }}></div>
-                                    <div className="placeholder col-12" style={{ height: '300px' }}></div>
+                                    {/* Placeholder untuk Tabs */}
+                                    <div className="d-flex mb-4 gap-2">
+                                        <div className="placeholder rounded" style={{ width: '80px', height: '38px' }}></div>
+                                        <div className="placeholder rounded" style={{ width: '100px', height: '38px' }}></div>
+                                        <div className="placeholder rounded" style={{ width: '70px', height: '38px' }}></div>
+                                    </div>
+
+                                    {/* Placeholder untuk Judul Konten Tab */}
+                                    <div className="placeholder col-4 mb-3" style={{ height: '32px' }}></div>
+
+                                    {/* Placeholder untuk beberapa baris paragraf */}
+                                    <div className="placeholder col-12 mb-2"></div>
+                                    <div className="placeholder col-11 mb-2"></div>
+                                    <div className="placeholder col-12 mb-2"></div>
+                                    <div className="placeholder col-8 mb-4"></div>
+
+                                    {/* Tambahkan lebih banyak jika deskripsi cenderung panjang */}
+                                    <div className="placeholder col-12 mb-2"></div>
+                                    <div className="placeholder col-10"></div>
                                 </div>
                             ) : (
                                 <>
@@ -149,7 +164,7 @@ const CoursesDetailsArea = () => {
                                     <div
                                         className="tab-content position-relative overflow-hidden"
                                         style={{
-                                            minHeight: "700px", // tingkatkan jika quiz banyak soal
+
                                             transition: "min-height 0.3s ease-in-out" // smooth transition
                                         }}
                                     >
@@ -252,15 +267,30 @@ const CoursesDetailsArea = () => {
 
                     {/* Sidebar */}
                     <div className="col-lg-4">
-                        <div className="bg-white p-4 rounded shadow-sm" style={{ minHeight: "600px" }}>
+                        <div className="bg-white p-4 rounded shadow-sm" >
                             {loading ? (
-                                <div className="placeholder-glow" style={{ minHeight: "600px" }}>
-                                    <div className="placeholder w-100 mb-3" style={{ height: "200px" }}></div>
-                                    <div className="placeholder col-6 mb-2" style={{ height: "20px" }}></div>
-                                    <div className="placeholder col-10 mb-2" style={{ height: "30px" }}></div>
-                                    <div className="placeholder col-4 mb-2" style={{ height: "20px" }}></div>
-                                    <div className="placeholder col-12 mb-2" style={{ height: "250px" }}></div>
-                                    <div className="placeholder col-8 mb-2" style={{ height: "50px" }}></div>
+                                <div className="placeholder-glow">
+                                    {/* Placeholder untuk Gambar. Gunakan aspect-ratio! */}
+                                    <div className="placeholder w-100 rounded mb-3" style={{ aspectRatio: '16 / 9' }}></div>
+
+                                    {/* Placeholder untuk Kategori & Judul */}
+                                    <div className="placeholder col-6 mb-2"></div>
+                                    <div className="placeholder col-10 mb-2" style={{ height: '30px' }}></div>
+                                    <div className="placeholder col-4 mb-3" style={{ height: '28px' }}></div>
+
+                                    {/* Placeholder untuk Tombol */}
+                                    <div className="placeholder col-12 rounded mb-2" style={{ height: '38px' }}></div>
+                                    <div className="placeholder col-12 rounded mb-3" style={{ height: '38px' }}></div>
+
+                                    {/* Placeholder untuk List Detail Kursus */}
+                                    <div className="placeholder col-7 mb-2"></div>
+                                    <div className="placeholder col-5 mb-2"></div>
+                                    <div className="placeholder col-6 mb-2"></div>
+                                    <div className="placeholder col-7 mb-2"></div>
+                                    <div className="placeholder col-5 mb-2"></div>
+
+                                    {/* Placeholder untuk tombol Share */}
+                                    <div className="placeholder col-12 rounded mt-3" style={{ height: '31px' }}></div>
                                 </div>
                             ) : (
                                 <>
