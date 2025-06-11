@@ -100,8 +100,12 @@ const CoursesDetailsArea = () => {
 
     if (loading) {
         return (
-            <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "500px" }}>
-                <p className="text-center">Loading...</p>
+            <div style={{ minHeight: "500px" }} className="p-4">
+                <div className="placeholder-glow">
+                    <div className="placeholder col-12 mb-3" style={{ height: "20px" }}></div>
+                    <div className="placeholder col-8 mb-3" style={{ height: "20px" }}></div>
+                    <div className="placeholder col-10" style={{ height: "20px" }}></div>
+                </div>
             </div>
         );
     }
