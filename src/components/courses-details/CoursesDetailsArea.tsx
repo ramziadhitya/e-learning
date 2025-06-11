@@ -98,7 +98,13 @@ const CoursesDetailsArea = () => {
         return () => clearTimeout(timer);
     }, [quizStarted, timeLeft]);
 
-    if (loading) return <p className="text-center py-5">Loading...</p>;
+    if (loading) {
+        return (
+            <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "500px" }}>
+                <p className="text-center">Loading...</p>
+            </div>
+        );
+    }
     if (!course) return <p className="text-center py-5">Course not found</p>;
 
     const data = course;
