@@ -114,7 +114,7 @@ const CoursesDetailsArea = () => {
     };
 
     return (
-        <section className="pt-5 pb-5 bg-light">
+        <section className="pt-5 pb-5 bg-light" style={{ height: "700px" }}>
             <div className="container">
                 <div className="row">
                     {/* Left Content */}
