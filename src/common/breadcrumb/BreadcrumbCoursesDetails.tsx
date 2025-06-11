@@ -78,7 +78,6 @@ const BreadcrumbCoursesDetails = () => {
                         <h1>{title}</h1>
                         <div className="courses-breadcrumb-items">
                             <div className="client-image-items">
-                                <img src="/assets/img/courses/client-3.png" alt="img" loading="lazy" />
                                 <div className="client-content">
                                     <span>Instructor</span>
                                     <h5>{instructor?.username || "Unknown"}</h5>
