@@ -127,7 +127,7 @@ const CoursesDetailsArea = () => {
                             </ul>
 
                             {/* Tab Content */}
-                            <div className="tab-content" style={{ minHeight: "400px" }}>
+                            <div className="tab-content position-relative overflow-hidden" style={{ minHeight: "500px" }}>
                                 {/* Course Info */}
                                 <div id="Course" className="tab-pane fade show active">
                                     <h3>Description</h3>
@@ -145,13 +145,17 @@ const CoursesDetailsArea = () => {
                                     <h3>Course Curriculum</h3>
                                     {Array.isArray(data.video) && data.video.length > 0 ? (
                                         data.video.map((vid: any, idx: number) => (
-                                            <video
-                                                key={idx}
-                                                controls
-                                                className="w-100 rounded my-3"
-                                                src={`${API_URL}${vid.url}`}
-                                                preload="metadata"
-                                            />
+                                            <div style={{ aspectRatio: '16/9', backgroundColor: '#000' }}>
+                                                <video
+                                                    key={idx}
+                                                    controls
+                                                    className="w-100 h-100 rounded my-3"
+                                                    src={`${API_URL}${vid.url}`}
+                                                    preload="metadata"
+                                                    style={{ objectFit: "cover" }}
+                                                />
+                                            </div>
+
                                         ))
                                     ) : (
                                         <p className="text-muted">No video available.</p>
