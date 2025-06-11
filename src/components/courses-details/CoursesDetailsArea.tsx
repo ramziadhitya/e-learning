@@ -129,7 +129,7 @@ const CoursesDetailsArea = () => {
                             {/* Tab Content */}
                             <div className="tab-content position-relative overflow-hidden" style={{ minHeight: "500px" }}>
                                 {/* Course Info */}
-                                <div id="Course" className="tab-pane fade show active">
+                                <div id="Course" className="tab-pane fade show active " style={{ minHeight: "500px" }}>
                                     <h3>Description</h3>
                                     {Array.isArray(data.description) ? (
                                         data.description.map((block: any, i: number) => (
@@ -141,7 +141,7 @@ const CoursesDetailsArea = () => {
                                 </div>
 
                                 {/* Curriculum */}
-                                <div id="Curriculum" className="tab-pane fade">
+                                <div id="Curriculum" className="tab-pane fade" style={{ minHeight: "500px" }}>
                                     <h3>Course Curriculum</h3>
                                     {Array.isArray(data.video) && data.video.length > 0 ? (
                                         data.video.map((vid: any, idx: number) => (
@@ -163,7 +163,7 @@ const CoursesDetailsArea = () => {
                                 </div>
 
                                 {/* Quiz */}
-                                <div id="Quiz" className="tab-pane fade">
+                                <div id="Quiz" className="tab-pane fade" style={{ minHeight: "500px" }}>
                                     <h3 className="mb-3">Quiz</h3>
 
                                     {!quizStarted ? (
@@ -229,7 +229,6 @@ const CoursesDetailsArea = () => {
                     <div className="col-lg-4">
                         <div className="bg-white p-4 rounded shadow-sm">
                             <img
-                                src={data.thumbnail?.url ? `${API_URL}${data.thumbnail.url}` : "/assets/img/default-thumbnail.jpg"}
                                 alt={data.title}
                                 width="100%"
                                 height="200"
