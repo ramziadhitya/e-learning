@@ -61,9 +61,9 @@ const BreadcrumbCoursesDetails = () => {
             <div className="shape-2">
                 <img src="/assets/img/breadcrumb/shape-2.png" alt="img" loading="lazy" />
             </div> */}
-            <div className="dot-shape">
+            {/* <div className="dot-shape">
                 <img src="/assets/img/breadcrumb/dot-shape.png" alt="img" loading="lazy" />
-            </div>
+            </div> */}
             {/* <div className="vector-shape">
                 <img src="/assets/img/breadcrumb/Vector.png" alt="img" loading="lazy" />
             </div> */}
