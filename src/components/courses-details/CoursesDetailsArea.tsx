@@ -164,8 +164,8 @@ const CoursesDetailsArea = () => {
                                     <div
                                         className="tab-content position-relative overflow-hidden"
                                         style={{
-
-                                            transition: "min-height 0.3s ease-in-out" // smooth transition
+                                            transition: "min-height 0.3s ease-in-out",
+                                            minHeight: "400px", // ini menjaga space saat tab berpindah
                                         }}
                                     >
                                         {/* Course Info */}
@@ -185,15 +185,16 @@ const CoursesDetailsArea = () => {
                                             <h3>Course Curriculum</h3>
                                             {Array.isArray(course.video) && course.video.length > 0 ? (
                                                 course.video.map((vid: any, idx: number) => (
-                                                    <div key={idx} style={{ aspectRatio: '16/9', backgroundColor: '#000' }}>
+                                                    <div key={idx} style={{ aspectRatio: '16 / 9', backgroundColor: '#000', marginBottom: '1rem' }}>
                                                         <video
                                                             controls
-                                                            className="w-100 h-100 rounded my-3"
+                                                            preload="none"
+                                                            className="w-100 h-100 rounded"
                                                             src={`${API_URL}${vid.url}`}
-                                                            preload="metadata"
-                                                            style={{ objectFit: "cover" }}
+                                                            style={{ objectFit: "cover", width: "100%", height: "100%" }}
                                                         />
                                                     </div>
+
                                                 ))
                                             ) : (
                                                 <p className="text-muted">No video available.</p>
@@ -267,7 +268,7 @@ const CoursesDetailsArea = () => {
 
                     {/* Sidebar */}
                     <div className="col-lg-4">
-                        <div className="bg-white p-4 rounded shadow-sm" >
+                        <div className="bg-white p-4 rounded shadow-sm" style={{ minHeight: "500px" }}>
                             {loading ? (
                                 <div className="placeholder-glow">
                                     {/* Placeholder untuk Gambar. Gunakan aspect-ratio! */}
@@ -301,8 +302,9 @@ const CoursesDetailsArea = () => {
                                         loading="lazy"
                                         width="640"
                                         height="360"
-                                        style={{ objectFit: "cover", width: "100%", height: "200px" }}
+                                        style={{ objectFit: "cover", width: "100%", height: "200px" }} // ini menjaga tinggi tetap
                                     />
+
                                     <h5 className="text-muted">{course.category}</h5>
                                     <h4 className="fw-bold">{course.title}</h4>
                                     <p className="text-primary fs-5">${course.price}</p>
