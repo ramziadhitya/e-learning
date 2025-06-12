@@ -101,15 +101,16 @@ const CoursesDetailsArea = () => {
 
     if (loading) {
         return (
-            <div className="p-4">
-                <div className="placeholder-glow">
-                    <div className="placeholder col-12 mb-3" style={{ height: "20px" }}></div>
-                    <div className="placeholder col-8 mb-3" style={{ height: "20px" }}></div>
-                    <div className="placeholder col-10" style={{ height: "20px" }}></div>
+            <div className="p-4 min-h-[200px]"> {/* menetapkan tinggi minimum */}
+                <div className="animate-pulse space-y-3">
+                    <div className="bg-gray-300 rounded h-5 w-full"></div>
+                    <div className="bg-gray-300 rounded h-5 w-4/5"></div>
+                    <div className="bg-gray-300 rounded h-5 w-10/12"></div>
                 </div>
             </div>
         );
     }
+
     if (!course) return <p className="text-center py-5">Course not found</p>;
 
 
