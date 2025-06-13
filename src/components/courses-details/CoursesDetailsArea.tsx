@@ -114,7 +114,10 @@ const CoursesDetailsArea = () => {
 
 
     return (
-        <section className="pt-5 pb-5 bg-light">
+        <section
+            className="pt-5 pb-5 bg-light"
+            style={{ minHeight: "100vh", paddingTop: "60px", paddingBottom: "60px" }}
+        >
             <div className="container" style={{ maxWidth: "1140px" }}>
                 <div className="row">
                     {/* LEFT: MAIN CONTENT */}
