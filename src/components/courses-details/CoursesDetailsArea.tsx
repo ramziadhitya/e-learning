@@ -1,4 +1,4 @@
-
+// CoursesDetailsArea.tsx
 
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
@@ -6,8 +6,6 @@ import axios from "axios";
 import qs from "qs";
 
 const API_URL = import.meta.env.VITE_API_URL;
-
-const Tabs = ["Course", "Curriculum", "Quiz"];
 
 const CoursesDetailsArea = () => {
     const { slug } = useParams<{ slug: string }>();
@@ -17,6 +15,7 @@ const CoursesDetailsArea = () => {
     const [quizResult, setQuizResult] = useState<any>(null);
     const [quizStarted, setQuizStarted] = useState(false);
     const [timeLeft, setTimeLeft] = useState(60);
+
 
     const handleSubmitQuiz = async () => {
         const quiz = course?.quizzes?.[0];
@@ -57,23 +56,27 @@ const CoursesDetailsArea = () => {
     useEffect(() => {
         if (!slug) return;
 
-        const query = qs.stringify({
-            filters: { slug: { $eq: slug } },
-            populate: {
-                video: true,
-                thumbnail: true,
-                instructor: true,
-                quizzes: {
-                    populate: {
-                        questions: {
-                            populate: { answers: true },
+        const query = qs.stringify(
+            {
+                filters: { slug: { $eq: slug } },
+                populate: {
+                    video: true,
+                    thumbnail: true,
+                    instructor: true,
+                    quizzes: {
+                        populate: {
+                            questions: {
+                                populate: { answers: true },
+                            },
                         },
                     },
                 },
             },
-        }, { encodeValuesOnly: true });
+            { encodeValuesOnly: true }
+        );
 
-        axios.get(`${API_URL}/api/courses?${query}`)
+        axios
+            .get(`${API_URL}/api/courses?${query}`)
             .then((res) => {
                 const raw = res.data.data?.[0];
                 if (raw) setCourse(raw);
@@ -84,183 +87,258 @@ const CoursesDetailsArea = () => {
 
     useEffect(() => {
         let timer: NodeJS.Timeout;
+
         if (quizStarted && timeLeft > 0) {
-            timer = setTimeout(() => setTimeLeft(prev => prev - 1), 1000);
+            timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
         }
+
         if (quizStarted && timeLeft === 0) {
             handleSubmitQuiz();
         }
+
         return () => clearTimeout(timer);
     }, [quizStarted, timeLeft]);
 
     if (loading) {
         return (
-            <section className="pt-5 pb-5 bg-light" style={{ minHeight: "100vh" }}>
-                <div className="container" style={{ maxWidth: "1140px" }}>
-                    <div className="row">
-                        <div className="col-lg-8 mb-4">
-                            <div className="bg-white rounded shadow-sm p-4">
-                                <div className="placeholder-glow">
-                                    <div className="placeholder col-12 mb-3" style={{ height: "20px" }}></div>
-                                    <div className="placeholder col-8 mb-3" style={{ height: "20px" }}></div>
-                                    <div className="placeholder col-10" style={{ height: "20px" }}></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div className="p-4">
+                <div className="placeholder-glow">
+                    <div className="placeholder col-12 mb-3" style={{ height: "20px" }}></div>
+                    <div className="placeholder col-8 mb-3" style={{ height: "20px" }}></div>
+                    <div className="placeholder col-10" style={{ height: "20px" }}></div>
                 </div>
-            </section>
+            </div>
         );
     }
-
     if (!course) return <p className="text-center py-5">Course not found</p>;
 
-    const renderTabs = () => (
-        <ul className="nav nav-pills mb-4 gap-2" id="tabs" style={{ height: "42px" }}>
-            {Tabs.map((tab) => (
-                <li className="nav-item" key={tab}>
-                    <a
-                        href={`#${tab}`}
-                        data-bs-toggle="tab"
-                        className={`nav-link ${tab === "Course" ? "active" : ""}`}
-                        role="tab"
-                        style={{ width: "120px", textAlign: "center", height: "100%" }}
-                    >
-                        {tab}
-                    </a>
-                </li>
-            ))}
-        </ul>
-    );
-
-    const renderVideoSection = () => (
-        Array.isArray(course.video) && course.video.length > 0 ? (
-            course.video.map((vid: any, idx: number) => (
-                <div key={idx} className="mb-3" style={{ borderRadius: "8px", overflow: "hidden" }}>
-                    <video
-                        controls
-                        preload="none"
-                        src={`${API_URL}${vid.url}`}
-                        className="w-100"
-                        style={{ height: "315px", objectFit: "cover" }}
-                    />
-                </div>
-            ))
-        ) : (
-            <p className="text-muted">No video available.</p>
-        )
-    );
 
     return (
-        <section className="pt-5 pb-5 bg-light" style={{ minHeight: "100vh" }}>
-            <div className="container" style={{ maxWidth: "1140px" }}>
+        <section className="pt-5 pb-5 bg-light">
+            <div className="container">
                 <div className="row">
+                    {/* Left Content */}
                     <div className="col-lg-8 mb-4">
-                        <div className="bg-white rounded shadow-sm p-4" style={{ minHeight: "650px" }}>
-                            {renderTabs()}
-                            <div className="tab-content" style={{ minHeight: "500px" }}>
-                                <div id="Course" className="tab-pane fade show active">
-                                    <h3 className="mb-3" style={{ fontSize: "22px" }}>Description</h3>
-                                    {Array.isArray(course.description) ? (
-                                        course.description.map((block: any, i: number) => (
-                                            <p key={i} style={{ fontSize: "16px", lineHeight: "1.7" }}>
-                                                {block.children?.[0]?.text || ""}
-                                            </p>
-                                        ))
-                                    ) : (
-                                        <p style={{ fontSize: "16px", lineHeight: "1.7" }}>{course.description}</p>
-                                    )}
-                                </div>
+                        <div className="bg-white rounded p-4 shadow-sm">
+                            {loading ? (
+                                <div className="placeholder-glow">
+                                    {/* Placeholder untuk Tabs */}
+                                    <div className="d-flex mb-4 gap-2">
+                                        <div className="placeholder rounded" style={{ width: '80px', height: '38px' }}></div>
+                                        <div className="placeholder rounded" style={{ width: '100px', height: '38px' }}></div>
+                                        <div className="placeholder rounded" style={{ width: '70px', height: '38px' }}></div>
+                                    </div>
 
-                                <div id="Curriculum" className="tab-pane fade">
-                                    <h3 className="mb-3" style={{ fontSize: "22px" }}>Course Curriculum</h3>
-                                    {renderVideoSection()}
-                                </div>
+                                    {/* Placeholder untuk Judul Konten Tab */}
+                                    <div className="placeholder col-4 mb-3" style={{ height: '32px' }}></div>
 
-                                <div id="Quiz" className="tab-pane fade">
-                                    <h3 className="mb-3" style={{ fontSize: "22px" }}>Quiz</h3>
-                                    {!quizStarted ? (
-                                        <div className="text-center">
-                                            <button className="btn btn-success" style={{ width: "160px", height: "44px" }} onClick={() => setQuizStarted(true)}>Start Quiz</button>
+                                    {/* Placeholder untuk beberapa baris paragraf */}
+                                    <div className="placeholder col-12 mb-2"></div>
+                                    <div className="placeholder col-11 mb-2"></div>
+                                    <div className="placeholder col-12 mb-2"></div>
+                                    <div className="placeholder col-8 mb-4"></div>
+
+                                    {/* Tambahkan lebih banyak jika deskripsi cenderung panjang */}
+                                    <div className="placeholder col-12 mb-2"></div>
+                                    <div className="placeholder col-10"></div>
+                                </div>
+                            ) : (
+                                <>
+                                    {/* Tabs */}
+                                    <ul className="nav nav-pills mb-4 gap-2" id="tabs">
+                                        {["Course", "Curriculum", "Quiz"].map((tab) => (
+                                            <li className="nav-item" key={tab}>
+                                                <a
+                                                    href={`#${tab}`}
+                                                    data-bs-toggle="tab"
+                                                    className={`nav-link ${tab === "Course" ? "active" : ""}`}
+                                                    role="tab"
+                                                >
+                                                    {tab}
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    {/* Tab Content */}
+                                    <div
+                                        className="tab-content position-relative overflow-hidden"
+                                        style={{
+                                            transition: "min-height 0.3s ease-in-out",
+                                            minHeight: "400px", // ini menjaga space saat tab berpindah
+                                        }}
+                                    >
+                                        {/* Course Info */}
+                                        <div id="Course" className="tab-pane fade show active">
+                                            <h3>Description</h3>
+                                            {Array.isArray(course.description) ? (
+                                                course.description.map((block: any, i: number) => (
+                                                    <p key={i}>{block.children?.[0]?.text || ""}</p>
+                                                ))
+                                            ) : (
+                                                <p>{course.description}</p>
+                                            )}
                                         </div>
-                                    ) : (
-                                        <>
-                                            <div className="mb-3 text-end">
-                                                <span className="badge bg-danger" style={{ fontSize: "16px", padding: "10px 14px" }}>
-                                                    Time Left: {Math.floor(timeLeft / 60).toString().padStart(2, "0")}:{(timeLeft % 60).toString().padStart(2, "0")}
-                                                </span>
-                                            </div>
-                                            {course.quizzes?.[0]?.questions?.map((q: any, index: number) => (
-                                                <div key={q.id} className="mb-4 p-3 border rounded bg-light">
-                                                    <p className="fw-bold" style={{ fontSize: "17px" }}>{index + 1}. {q.questionText}</p>
-                                                    {q.answers.map((ans: any) => (
-                                                        <div key={ans.id} className="form-check mb-1">
-                                                            <input
-                                                                className="form-check-input"
-                                                                type="radio"
-                                                                name={`question-${q.id}`}
-                                                                id={`answer-${ans.id}`}
-                                                                value={ans.id}
-                                                                checked={selectedAnswers[q.id] === ans.id}
-                                                                onChange={() => setSelectedAnswers(prev => ({ ...prev, [q.id]: ans.id }))}
-                                                            />
-                                                            <label className="form-check-label" htmlFor={`answer-${ans.id}`} style={{ fontSize: "15px" }}>{ans.text}</label>
+
+                                        {/* Curriculum */}
+                                        <div id="Curriculum" className="tab-pane fade">
+                                            <h3>Course Curriculum</h3>
+                                            {Array.isArray(course.video) && course.video.length > 0 ? (
+                                                course.video.map((vid: any, idx: number) => (
+                                                    <div key={idx} style={{ aspectRatio: '16 / 9', backgroundColor: '#000', marginBottom: '1rem' }}>
+                                                        <video
+                                                            controls
+                                                            preload="none"
+                                                            className="w-100 h-100 rounded"
+                                                            src={`${API_URL}${vid.url}`}
+                                                            style={{ objectFit: "cover", width: "100%", height: "100%" }}
+                                                        />
+                                                    </div>
+
+                                                ))
+                                            ) : (
+                                                <p className="text-muted">No video available.</p>
+                                            )}
+                                        </div>
+
+                                        {/* Quiz */}
+                                        <div id="Quiz" className="tab-pane fade">
+                                            <h3 className="mb-3">Quiz</h3>
+
+                                            {!quizStarted ? (
+                                                <div className="text-center">
+                                                    <button className="btn btn-success" onClick={() => setQuizStarted(true)}>
+                                                        Start Quiz
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <div className="mb-3 text-end">
+                                                        <span className="badge bg-danger">
+                                                            Time Left: {Math.floor(timeLeft / 60).toString().padStart(2, '0')}:
+                                                            {(timeLeft % 60).toString().padStart(2, '0')}
+                                                        </span>
+                                                    </div>
+
+                                                    {course.quizzes?.[0]?.questions?.map((q: any, index: number) => (
+                                                        <div key={q.id} className="mb-4 p-3 border rounded bg-light">
+                                                            <p className="fw-bold">{index + 1}. {q.questionText}</p>
+                                                            {q.answers.map((ans: any) => (
+                                                                <div key={ans.id} className="form-check">
+                                                                    <input
+                                                                        className="form-check-input"
+                                                                        type="radio"
+                                                                        name={`question-${q.id}`}
+                                                                        id={`answer-${ans.id}`}
+                                                                        value={ans.id}
+                                                                        checked={selectedAnswers[q.id] === ans.id}
+                                                                        onChange={() =>
+                                                                            setSelectedAnswers(prev => ({ ...prev, [q.id]: ans.id }))
+                                                                        }
+                                                                    />
+                                                                    <label className="form-check-label" htmlFor={`answer-${ans.id}`}>
+                                                                        {ans.text}
+                                                                    </label>
+                                                                </div>
+                                                            ))}
                                                         </div>
                                                     ))}
-                                                </div>
-                                            ))}
-                                            <div className="text-end">
-                                                <button className="btn btn-primary" style={{ width: "160px", height: "44px" }} onClick={handleSubmitQuiz}>Submit Quiz</button>
-                                            </div>
-                                        </>
-                                    )}
 
-                                    {quizResult && (
-                                        <div className="alert alert-info mt-4" style={{ fontSize: "16px" }}>
-                                            <p><strong>Score:</strong> {quizResult.score}%</p>
-                                            <p><strong>Correct:</strong> {quizResult.correctAnswers} / {quizResult.totalQuestions}</p>
-                                            <p><strong>Status:</strong> {quizResult.passed ? "Passed 🎉" : "Failed ❌"}</p>
+                                                    <div className="text-end">
+                                                        <button className="btn btn-primary" onClick={handleSubmitQuiz}>
+                                                            Submit Quiz
+                                                        </button>
+                                                    </div>
+                                                </>
+                                            )}
+
+                                            {quizResult && (
+                                                <div className="alert alert-info mt-4">
+                                                    <p><strong>Score:</strong> {quizResult.score}%</p>
+                                                    <p><strong>Correct:</strong> {quizResult.correctAnswers} / {quizResult.totalQuestions}</p>
+                                                    <p><strong>Status:</strong> {quizResult.passed ? "Passed 🎉" : "Failed ❌"}</p>
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
-                                </div>
-                            </div>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
 
+                    {/* Sidebar */}
                     <div className="col-lg-4">
-                        <div className="bg-white rounded shadow-sm p-4" style={{ minHeight: "650px" }}>
-                            <img
-                                src={course.thumbnail?.url ? `${API_URL}${course.thumbnail.url}` : "/assets/img/default-thumbnail.jpg"}
-                                alt={course.title}
-                                className="img-fluid rounded mb-3"
-                                width={400}
-                                height={225}
-                                style={{ width: "100%", height: "225px", objectFit: "cover" }}
-                            />
-                            <h5 className="text-muted" style={{ fontSize: "14px" }}>{course.category}</h5>
-                            <h4 className="fw-bold" style={{ fontSize: "20px" }}>{course.title}</h4>
-                            <p className="text-primary fs-5" style={{ fontSize: "18px" }}>${course.price}</p>
-                            <div className="d-grid gap-2 my-3">
-                                <Link to={`/courses-details/${course.slug}`} className="btn btn-outline-primary" style={{ height: "42px" }}>Add to Cart</Link>
-                                <Link to={`/courses-details/${course.slug}`} className="btn btn-primary" style={{ height: "42px" }}>Buy Course</Link>
-                            </div>
-                            <ul className="list-unstyled text-secondary" style={{ fontSize: "15px" }}>
-                                <li><strong>Instructor:</strong> {course.instructor?.username}</li>
-                                <li><strong>Lessons:</strong> {course.video?.length || 0}</li>
-                                <li><strong>Duration:</strong> {course.duration}</li>
-                                <li><strong>Students:</strong> {course.studentsCount}</li>
-                                <li><strong>Language:</strong> {course.language}</li>
-                                <li><strong>Level:</strong> {course.level}</li>
-                                <li><strong>Certification:</strong> {course.certification ? "Yes" : "No"}</li>
-                            </ul>
-                            <Link to={`/courses-details/${course.slug}`} className="btn btn-sm btn-outline-secondary w-100 mt-3" style={{ height: "38px" }}>
-                                <i className="fas fa-share me-2"></i> Share this course
-                            </Link>
+                        <div className="bg-white p-4 rounded shadow-sm" style={{ minHeight: "500px" }}>
+                            {loading ? (
+                                <div className="placeholder-glow">
+                                    {/* Placeholder untuk Gambar. Gunakan aspect-ratio! */}
+                                    <div className="placeholder w-100 rounded mb-3" style={{ aspectRatio: '16 / 9' }}></div>
+
+                                    {/* Placeholder untuk Kategori & Judul */}
+                                    <div className="placeholder col-6 mb-2"></div>
+                                    <div className="placeholder col-10 mb-2" style={{ height: '30px' }}></div>
+                                    <div className="placeholder col-4 mb-3" style={{ height: '28px' }}></div>
+
+                                    {/* Placeholder untuk Tombol */}
+                                    <div className="placeholder col-12 rounded mb-2" style={{ height: '38px' }}></div>
+                                    <div className="placeholder col-12 rounded mb-3" style={{ height: '38px' }}></div>
+
+                                    {/* Placeholder untuk List Detail Kursus */}
+                                    <div className="placeholder col-7 mb-2"></div>
+                                    <div className="placeholder col-5 mb-2"></div>
+                                    <div className="placeholder col-6 mb-2"></div>
+                                    <div className="placeholder col-7 mb-2"></div>
+                                    <div className="placeholder col-5 mb-2"></div>
+
+                                    {/* Placeholder untuk tombol Share */}
+                                    <div className="placeholder col-12 rounded mt-3" style={{ height: '31px' }}></div>
+                                </div>
+                            ) : (
+                                <>
+                                    <img
+                                        src={course.thumbnail?.url ? `${API_URL}${course.thumbnail.url}` : "/assets/img/default-thumbnail.jpg"}
+                                        alt={course.title}
+                                        className="img-fluid rounded mb-3"
+                                        loading="lazy"
+                                        width="640"
+                                        height="360"
+                                        style={{ objectFit: "cover", width: "100%", height: "200px" }} // ini menjaga tinggi tetap
+                                    />
+
+                                    <h5 className="text-muted">{course.category}</h5>
+                                    <h4 className="fw-bold">{course.title}</h4>
+                                    <p className="text-primary fs-5">${course.price}</p>
+
+                                    <div className="d-grid gap-2 my-3">
+                                        <Link to={`/courses-details/${course.slug}`} className="btn btn-outline-primary">
+                                            Add to Cart
+                                        </Link>
+                                        <Link to={`/courses-details/${course.slug}`} className="btn btn-primary">
+                                            Buy Course
+                                        </Link>
+                                    </div>
+
+                                    <ul className="list-unstyled text-secondary">
+                                        <li><strong>Instructor:</strong> {course.instructor?.username}</li>
+                                        <li><strong>Lessons:</strong> {course.video?.length || 0}</li>
+                                        <li><strong>Duration:</strong> {course.duration}</li>
+                                        <li><strong>Students:</strong> {course.studentsCount}</li>
+                                        <li><strong>Language:</strong> {course.language}</li>
+                                        <li><strong>Level:</strong> {course.level}</li>
+                                        <li><strong>Certification:</strong> {course.certification ? "Yes" : "No"}</li>
+                                    </ul>
+
+                                    <Link to={`/courses-details/${course.slug}`} className="btn btn-sm btn-outline-secondary w-100 mt-3">
+                                        <i className="fas fa-share me-2"></i> Share this course
+                                    </Link>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
     );
 };
 
